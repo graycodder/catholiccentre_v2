@@ -1,0 +1,24 @@
+{
+  "rules": {
+    "courses": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "blogs": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "faculty": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "leads": {
+      ".read": "auth != null",
+      ".write": true
+    },
+    "leadership": {
+      ".read": true,
+      ".write": "auth != null"
+    }
+  }
+}
