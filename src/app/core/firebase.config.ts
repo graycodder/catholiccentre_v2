@@ -4,7 +4,7 @@ import { getDatabase } from 'firebase/database';
 import { getStorage } from 'firebase/storage';
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDlbw6ioFQCxSYZXt7VDjCWbXO5UJIziw8",
+  apiKey: "AIzaSyDlbw6ioFQCxSYZXt7VDjCWbXO5UJIziW8",
   authDomain: "catholiccentreweb.firebaseapp.com",
   projectId: "catholiccentreweb",
   storageBucket: "catholiccentreweb.firebasestorage.app",

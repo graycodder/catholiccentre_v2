@@ -23,7 +23,7 @@ interface Course {
     <section class="adhunik-hero">
       <div class="container animate-fade-in">
         <span class="badge badge-burgundy">Government Recognized</span>
-        <h1 class="serif-text">Adhunik Career Academy</h1>
+        <h1 class="serif-text">Xtreem Coaching Center</h1>
         <p class="hero-sub font-gold">Nursing Assistant Certificate Program & Palliative Patient Care</p>
         <p class="desc">
           Acquire the essential clinical skills, first-aid certificates, and geriatric healthcare expertise to begin your nursing support career. We guarantee 100% job placements upon successful completion.
@@ -44,7 +44,7 @@ interface Course {
           <div *ngFor="let course of courses; let i = index" class="specs-grid grid-cols-2" [style.margin-bottom]="i === courses.length - 1 ? '0' : '5rem'">
             <div class="specs-intro">
               <h2>{{ course.name }}</h2>
-              <p>{{ course.description }}</p>
+              <p *ngIf="course.description && course.description.trim()">{{ course.description }}</p>
               <div class="specs-bullets">
                 <div class="spec-item">
                   <span class="material-icons-outlined gold-text">hourglass_bottom</span>
@@ -81,7 +81,7 @@ interface Course {
     <section class="section-padding advantages-section">
       <div class="container">
         <div class="section-header text-center">
-          <h2>ADHUNIK ADVANTAGES</h2>
+          <h2>XTREEM ADVANTAGES</h2>
           <p>We do not just teach; we shape career opportunities with direct tie-ups and hands-on modules.</p>
         </div>
 

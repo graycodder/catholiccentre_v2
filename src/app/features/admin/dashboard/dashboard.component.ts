@@ -132,7 +132,14 @@ interface LeadSummary {
               <span class="material-icons-outlined">person_add_alt</span>
               <div>
                 <strong>Add Staff Member</strong>
-                <p>Register directory profiles for teachers/directors</p>
+                <p>Register directory profiles for directors/staff</p>
+              </div>
+            </a>
+            <a routerLink="/admin/teachers" class="action-btn">
+              <span class="material-icons-outlined">workspace_premium</span>
+              <div>
+                <strong>Add Honorable Teacher</strong>
+                <p>Register directory profiles for educators</p>
               </div>
             </a>
           </div>

@@ -20,6 +20,16 @@ interface StaffMember {
   role: string;
   credentials: string;
   description: string;
+  photoUrl?: string;
+}
+
+interface TeacherMember {
+  id: string;
+  name: string;
+  role: string;
+  credentials: string;
+  description: string;
+  photoUrl?: string;
 }
 
 @Component({
@@ -98,7 +108,7 @@ interface StaffMember {
             <h3 class="serif-text font-burgundy">Managed by the Diocese of Cochin</h3>
             <p class="role-desc">Established in 1558</p>
             <p>
-              As one of the oldest dioceses in India, the Diocese of Cochin has spent over four centuries active in the educational, socio-economic, and cultural integration of the coastal community. Catholic Centre continues this legacy by steering St. Joseph's, ILA, Adhunik, and Fastrack Academies.
+              As one of the oldest dioceses in India, the Diocese of Cochin has spent over four centuries active in the educational, socio-economic, and cultural integration of the coastal community. Catholic Centre continues this legacy by steering St. Joseph's, ILA, Xtreem Coaching Center, and Fastrack Academies.
             </p>
           </div>
         </div>
@@ -118,7 +128,13 @@ interface StaffMember {
           <p>Loading leadership board...</p>
         </div>
 
-        <div *ngIf="!loadingLeaders" class="grid-cols-3 leadership-grid">
+        <!-- Empty state when no leaders found anywhere -->
+        <div *ngIf="!loadingLeaders && leaders.length === 0" class="text-center leaders-empty animate-fade-in">
+          <span class="material-icons-outlined">supervised_user_circle</span>
+          <p>Leadership profiles will appear here once added by the administration.</p>
+        </div>
+
+        <div *ngIf="!loadingLeaders && leaders.length > 0" class="grid-cols-3 leadership-grid">
           <div class="glass-card leader-card text-center" *ngFor="let leader of leaders">
             <!-- Photo if available, else initials avatar -->
             <img *ngIf="leader.photoUrl"
@@ -134,7 +150,49 @@ interface StaffMember {
             <h4>{{ leader.name }}</h4>
             <p class="leader-role">{{ leader.role }}</p>
             <p class="leader-credentials">{{ leader.credentials }}</p>
-            <p class="leader-desc">{{ leader.description }}</p>
+            <p class="leader-desc" *ngIf="leader.description && leader.description.trim()">{{ leader.description }}</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Honorable Teachers Section -->
+    <section class="section-padding teachers-section">
+      <div class="container">
+        <div class="section-header text-center animate-fade-in">
+          <h2 class="gold-gradient-text">OUR HONORABLE TEACHERS</h2>
+          <p>Meet the dedicated scholars and instructors driving academic success in our classrooms.</p>
+        </div>
+
+        <div *ngIf="loadingTeachers" class="leaders-loading text-center">
+          <span class="material-icons-outlined spin-icon">sync</span>
+          <p>Loading teacher directory...</p>
+        </div>
+
+        <!-- Empty state when no teachers found -->
+        <div *ngIf="!loadingTeachers && teachers.length === 0" class="text-center teachers-empty">
+          <span class="material-icons-outlined">workspace_premium</span>
+          <p>Teacher profiles will appear here once added by the administration.</p>
+        </div>
+
+        <div *ngIf="!loadingTeachers && teachers.length > 0" class="teachers-grid">
+          <div class="glass-card teacher-card" *ngFor="let member of teachers; let i = index">
+            <!-- Photo if available, else initials avatar -->
+            <img *ngIf="member.photoUrl"
+                 [src]="fixDriveUrl(member.photoUrl)"
+                 [alt]="member.name"
+                 class="teacher-photo">
+            <div *ngIf="!member.photoUrl"
+                 class="teacher-avatar"
+                 [class.teacher-avatar-alt]="i % 2 !== 0">
+              {{ getInitials(member.name) }}
+            </div>
+            <div class="teacher-info">
+              <h4>{{ member.name }}</h4>
+              <p class="teacher-role">{{ member.role }}</p>
+              <p class="teacher-credentials" *ngIf="member.credentials && member.credentials.trim()">{{ member.credentials }}</p>
+              <p class="teacher-desc" *ngIf="member.description && member.description.trim()">{{ member.description }}</p>
+            </div>
           </div>
         </div>
       </div>
@@ -161,14 +219,21 @@ interface StaffMember {
 
         <div *ngIf="!loadingStaff && staff.length > 0" class="staff-grid">
           <div class="glass-card staff-card" *ngFor="let member of staff; let i = index">
-            <div class="staff-avatar" [class.staff-avatar-alt]="i % 2 !== 0">
+            <!-- Photo if available, else initials avatar -->
+            <img *ngIf="member.photoUrl"
+                 [src]="fixDriveUrl(member.photoUrl)"
+                 [alt]="member.name"
+                 class="staff-photo">
+            <div *ngIf="!member.photoUrl"
+                 class="staff-avatar"
+                 [class.staff-avatar-alt]="i % 2 !== 0">
               {{ getInitials(member.name) }}
             </div>
             <div class="staff-info">
               <h4>{{ member.name }}</h4>
               <p class="staff-role">{{ member.role }}</p>
-              <p class="staff-credentials">{{ member.credentials }}</p>
-              <p class="staff-desc">{{ member.description }}</p>
+              <p class="staff-credentials" *ngIf="member.credentials && member.credentials.trim()">{{ member.credentials }}</p>
+              <p class="staff-desc" *ngIf="member.description && member.description.trim()">{{ member.description }}</p>
             </div>
           </div>
         </div>
@@ -275,6 +340,20 @@ interface StaffMember {
       margin-top: 0.5rem;
     }
 
+    .section-header {
+      margin-bottom: 2rem;
+    }
+
+    .section-header h2 {
+      font-size: 2.25rem;
+      margin-bottom: 0.10rem;
+    }
+
+    .section-header p {
+      color: var(--text-muted);
+      font-size: 1rem;
+    }
+
     /* Shared loading state */
     .leaders-loading {
       padding: 4rem 0;
@@ -295,6 +374,7 @@ interface StaffMember {
     /* Leadership cards */
     .leadership-grid {
       gap: 2.5rem;
+      margin-top: 0.5rem;
     }
 
     .leader-card {
@@ -305,28 +385,41 @@ interface StaffMember {
     }
 
     .leader-photo {
-      width: 96px;
-      height: 96px;
+      width: 250px;
+      height: 250px;
       border-radius: 50%;
       object-fit: cover;
       object-position: top center;
       margin-bottom: 1.5rem;
       border: 3px solid var(--gold);
       box-shadow: 0 6px 24px rgba(212, 175, 55, 0.3);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .leader-card:hover .leader-photo {
+      transform: scale(1.05);
+      border-color: var(--text-light);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
     }
 
     .avatar-initials {
-      width: 80px;
-      height: 80px;
+      width: 250px;
+      height: 250px;
       border-radius: 50%;
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.8rem;
+      font-size: 5rem;
       font-weight: 700;
       color: #000;
       margin-bottom: 1.5rem;
       box-shadow: var(--shadow-premium);
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.4s ease;
+    }
+
+    .leader-card:hover .avatar-initials {
+      transform: scale(1.05);
+      box-shadow: 0 10px 30px rgba(212, 175, 55, 0.3);
     }
 
     .bg-gold {
@@ -362,12 +455,12 @@ interface StaffMember {
       margin-bottom: 0;
     }
 
-    /* ── Staff & Faculty Section ── */
-    .staff-section {
+    /* ── Teachers Section ── */
+    .teachers-section {
       background: #040910;
     }
 
-    .staff-empty {
+    .teachers-empty {
       padding: 4rem 0;
       color: var(--text-muted);
       display: flex;
@@ -376,13 +469,135 @@ interface StaffMember {
       gap: 1rem;
     }
 
-    .staff-empty span {
+    .teachers-empty span {
       font-size: 3rem;
+      color: var(--gold);
+    }
+
+    .teachers-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 2rem;
+      margin-top: 0.5rem;
+    }
+
+    .teacher-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      padding: 2.5rem 2rem;
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .teacher-card:hover {
+      transform: translateY(-3px);
+    }
+
+    .teacher-photo {
+      flex-shrink: 0;
+      width: 180px;
+      height: 180px;
+      border-radius: 12px;
+      object-fit: cover;
+      object-position: top center;
+      margin-bottom: 1.5rem;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .teacher-card:hover .teacher-photo {
+      transform: scale(1.05);
+      border-color: var(--text-light);
+    }
+
+    .teacher-avatar {
+      flex-shrink: 0;
+      width: 180px;
+      height: 180px;
+      border-radius: 12px;
+      margin-bottom: 1.5rem;
+      background: linear-gradient(135deg, var(--gold) 0%, #a3811f 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      font-weight: 700;
+      color: #000;
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .teacher-card:hover .teacher-avatar {
+      transform: scale(1.05);
+    }
+
+    .teacher-avatar-alt {
+      background: linear-gradient(135deg, #b8001f 0%, #7a0015 100%);
+      color: #fff;
+      box-shadow: 0 4px 15px rgba(184, 0, 31, 0.2);
+    }
+
+    .teacher-info {
+      flex: 1;
+      min-width: 0;
+    }
+
+    .teacher-info h4 {
+      font-size: 1.05rem;
+      margin-bottom: 0.2rem;
+      line-height: 1.3;
+    }
+
+    .teacher-role {
+      font-size: 0.82rem;
+      color: var(--gold);
+      font-weight: 600;
+      margin-bottom: 0.2rem;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+
+    .teacher-credentials {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      font-weight: 500;
+      margin-bottom: 0.6rem;
+    }
+
+    .teacher-desc {
+      font-size: 0.83rem;
+      color: var(--text-muted);
+      line-height: 1.5;
+      margin: 0;
+    }
+
+    /* ── Staff & Faculty Section ── */
+    .staff-section {
+      background: #070f19;
+    }
+
+    .staff-empty, .leaders-empty {
+      padding: 4rem 0;
+      color: var(--text-muted);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .staff-empty span, .leaders-empty span {
+      font-size: 3rem;
+    }
+
+    .leaders-empty span {
+      color: var(--gold);
     }
 
     .staff-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(420px, 1fr));
       gap: 1.75rem;
       margin-top: 0.5rem;
     }
@@ -399,19 +614,41 @@ interface StaffMember {
       transform: translateY(-3px);
     }
 
+    .staff-photo {
+      flex-shrink: 0;
+      width: 150px;
+      height: 150px;
+      border-radius: 50%;
+      object-fit: cover;
+      object-position: top center;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      transition: transform 0.3s ease, border-color 0.3s ease;
+    }
+
+    .staff-card:hover .staff-photo {
+      transform: scale(1.08);
+      border-color: var(--text-light);
+    }
+
     .staff-avatar {
       flex-shrink: 0;
-      width: 56px;
-      height: 56px;
+      width: 150px;
+      height: 150px;
       border-radius: 50%;
       background: linear-gradient(135deg, var(--gold) 0%, #a3811f 100%);
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 1.2rem;
+      font-size: 2rem;
       font-weight: 700;
       color: #000;
       box-shadow: 0 4px 15px rgba(212, 175, 55, 0.2);
+      transition: transform 0.3s ease;
+    }
+
+    .staff-card:hover .staff-avatar {
+      transform: scale(1.08);
     }
 
     .staff-avatar-alt {
@@ -457,6 +694,7 @@ interface StaffMember {
     @media (max-width: 992px) {
       .intro-grid { grid-template-columns: 1fr; gap: 2rem; }
       .history-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .teachers-grid { grid-template-columns: 1fr; }
       .staff-grid { grid-template-columns: 1fr; }
     }
   `]
@@ -465,70 +703,17 @@ export class AboutComponent implements OnInit {
   leaders: Leader[] = [];
   loadingLeaders = true;
 
+  teachers: TeacherMember[] = [];
+  loadingTeachers = true;
+
   staff: StaffMember[] = [];
   loadingStaff = true;
 
-  // Fallback static leaders when Firebase is empty
-  private defaultLeaders: Leader[] = [
-    {
-      id: 'default-1',
-      name: 'Rev. Fr. Sunny Attapparambil',
-      role: 'Principal & Director',
-      credentials: 'B.A., B.Th., B.Ed., M.B.A., M.Ed.',
-      description: 'Leads academic administration and structural operations of the Catholic Centre.',
-      initials: 'SA',
-      avatarColor: 'gold'
-    },
-    {
-      id: 'default-2',
-      name: 'Rev. Fr. Antony Thamby Thaikkoottathil',
-      role: 'Assistant Director',
-      credentials: 'M.Ph., M.Th., M.B.A., P.G.H.A.',
-      description: 'Expertise in Philosophy, Theology, and Healthcare Management, guiding student welfare.',
-      initials: 'AT',
-      avatarColor: 'accent'
-    },
-    {
-      id: 'default-3',
-      name: 'Rev. Fr. Peter Chadayangad',
-      role: 'Vice Principal',
-      credentials: 'B.A., M.Th.',
-      description: 'Dedicated scholar offering theological insights and academic supervision to candidate batches.',
-      initials: 'PC',
-      avatarColor: 'gold'
-    },
-    {
-      id: 'default-4',
-      name: 'Rev. Dr. Johney Xavier Puthukkattu',
-      role: 'Advisory Board',
-      credentials: 'B.A., B.Ph., M.Phil., D.D.',
-      description: 'Doctorate in Divinity. Committed to community outreach and value education.',
-      initials: 'JX',
-      avatarColor: 'accent'
-    },
-    {
-      id: 'default-5',
-      name: 'Rev. Fr. Martin Delish Vakappadath',
-      role: 'Advisory Board',
-      credentials: 'B.A., B.Ph., M.Th.',
-      description: 'Spiritual guide driving community leadership and the theological orientation of the college.',
-      initials: 'MD',
-      avatarColor: 'gold'
-    },
-    {
-      id: 'default-6',
-      name: 'Rt. Rev. Dr. James Raphael Anaparambil',
-      role: 'Apostolic Administrator',
-      credentials: 'M.A., S.T.D.',
-      description: 'Patron administrator guiding the diocesan educational ministry and campus policies.',
-      initials: 'JA',
-      avatarColor: 'accent'
-    }
-  ];
+  // No fallback leaders anymore
 
   ngOnInit() {
     this.fetchLeaders();
-    this.fetchStaff();
+    this.fetchFacultyAndTeachers();
   }
 
   /**
@@ -571,33 +756,46 @@ export class AboutComponent implements OnInit {
             list.push({ id: key, ...data[key] } as Leader);
           });
         }
-        this.leaders = list.length > 0 ? list : this.defaultLeaders;
+        this.leaders = list;
         this.loadingLeaders = false;
       })
       .catch((error) => {
-        console.error('Error fetching leadership data, using fallback:', error);
-        this.leaders = this.defaultLeaders;
+        console.error('Error fetching leadership data:', error);
+        this.leaders = [];
         this.loadingLeaders = false;
       });
   }
 
-  fetchStaff() {
+  fetchFacultyAndTeachers() {
+    this.loadingTeachers = true;
     this.loadingStaff = true;
     get(ref(db, 'faculty'))
       .then((snapshot) => {
-        const list: StaffMember[] = [];
+        const teachersList: TeacherMember[] = [];
+        const staffList: StaffMember[] = [];
         if (snapshot.exists()) {
           const data = snapshot.val();
           Object.keys(data).forEach((key) => {
-            list.push({ id: key, ...data[key] } as StaffMember);
+            const item = data[key];
+            if (item) {
+              if (item.type === 'teacher') {
+                teachersList.push({ id: key, ...item } as TeacherMember);
+              } else {
+                staffList.push({ id: key, ...item } as StaffMember);
+              }
+            }
           });
         }
-        this.staff = list;
+        this.teachers = teachersList;
+        this.staff = staffList;
+        this.loadingTeachers = false;
         this.loadingStaff = false;
       })
       .catch((error) => {
-        console.error('Error fetching staff data:', error);
+        console.error('Error fetching faculty and teachers data:', error);
+        this.teachers = [];
         this.staff = [];
+        this.loadingTeachers = false;
         this.loadingStaff = false;
       });
   }

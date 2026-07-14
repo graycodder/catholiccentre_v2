@@ -4,7 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { db } from '../../../core/firebase.config';
 import { ref, get, push, set, remove } from 'firebase/database';
 
-interface FacultyMember {
+interface Teacher {
   id: string;
   name: string;
   role: string;
@@ -14,41 +14,41 @@ interface FacultyMember {
 }
 
 @Component({
-  selector: 'app-faculty',
+  selector: 'app-teachers',
   standalone: true,
   imports: [CommonModule, FormsModule],
   template: `
-    <div class="faculty-admin-wrapper">
-      <div class="faculty-admin-grid">
+    <div class="teachers-admin-wrapper">
+      <div class="teachers-admin-grid">
 
         <!-- Form -->
         <div class="glass-card form-card">
-          <h3>{{ isEditing ? 'Edit Staff Member' : 'Register Faculty Member' }}</h3>
+          <h3>{{ isEditing ? 'Edit Teacher Member' : 'Register Honorable Teacher' }}</h3>
           <p class="subtitle">
-            {{ isEditing ? 'Update the staff member details below.' : 'Publish academic directors or instructors to the public directories.' }}
+            {{ isEditing ? 'Update the teacher member details below.' : 'Publish academic educators or instructors to the public directories.' }}
           </p>
 
-          <form #facultyForm="ngForm" (ngSubmit)="handlePublish(facultyForm)" class="admin-form">
+          <form #teacherForm="ngForm" (ngSubmit)="handlePublish(teacherForm)" class="admin-form">
             <div class="form-group">
               <label class="form-label" for="name">Full Name *</label>
               <input type="text" id="name" name="name" [(ngModel)]="formData.name"
                      required #nameField="ngModel" class="form-control"
-                     placeholder="e.g. Rev. Fr. Sunny Attapparambil">
-              <span class="error-msg" *ngIf="nameField.invalid && nameField.touched">Faculty name is required</span>
+                     placeholder="e.g. Dr. Thomas George">
+              <span class="error-msg" *ngIf="nameField.invalid && nameField.touched">Teacher name is required</span>
             </div>
 
             <div class="form-group">
               <label class="form-label" for="role">Designation / Role *</label>
               <input type="text" id="role" name="role" [(ngModel)]="formData.role"
                      required class="form-control"
-                     placeholder="e.g. Principal & Director">
+                     placeholder="e.g. Senior Instructor">
             </div>
 
             <div class="form-group">
               <label class="form-label" for="credentials">Credentials / Degrees (Optional)</label>
               <input type="text" id="credentials" name="credentials" [(ngModel)]="formData.credentials"
                      class="form-control"
-                     placeholder="e.g. M.B.A., M.Ed.">
+                     placeholder="e.g. M.A., B.Ed., Ph.D.">
             </div>
 
             <div class="form-group">
@@ -58,11 +58,11 @@ interface FacultyMember {
                         placeholder="Describe their academic focus, expertise, or years of service..."></textarea>
             </div>
 
-            <!-- Faculty Photo Upload & URL options -->
+            <!-- Teacher Photo Upload & URL options -->
             <div class="form-group">
               <label class="form-label">
                 <span class="material-icons-outlined label-icon">add_photo_alternate</span>
-                Faculty Photograph
+                Teacher Photograph
               </label>
 
               <!-- Option 1: File selector from computer -->
@@ -99,7 +99,7 @@ interface FacultyMember {
                      target="_blank" 
                      class="btn-drive-link">
                     <span class="material-icons-outlined">folder_shared</span>
-                    Open Faculty Google Drive
+                    Open Google Drive Folder
                   </a>
                 </div>
               </div>
@@ -120,11 +120,11 @@ interface FacultyMember {
             </div>
 
             <div class="form-actions">
-              <button type="submit" [disabled]="facultyForm.invalid || publishing" class="btn-gold publish-btn">
+              <button type="submit" [disabled]="teacherForm.invalid || publishing" class="btn-gold publish-btn">
                 <span class="material-icons-outlined spin-icon" *ngIf="publishing">sync</span>
-                <span>{{ publishing ? 'Saving...' : (isEditing ? 'Update Staff Member' : 'Add Faculty Member') }}</span>
+                <span>{{ publishing ? 'Saving...' : (isEditing ? 'Update Teacher Member' : 'Add Teacher Member') }}</span>
               </button>
-              <button type="button" *ngIf="isEditing" (click)="cancelEdit(facultyForm)" class="btn-cancel">
+              <button type="button" *ngIf="isEditing" (click)="cancelEdit(teacherForm)" class="btn-cancel">
                 <span class="material-icons-outlined">close</span>
                 <span>Cancel</span>
               </button>
@@ -134,20 +134,20 @@ interface FacultyMember {
 
         <!-- Table List -->
         <div class="glass-card table-card">
-          <h3>Registered Staff Members</h3>
+          <h3>Registered Honorable Teachers</h3>
 
           <div *ngIf="loading" class="text-center table-loading">
             <span class="material-icons-outlined spin-icon">sync</span>
             <p>Loading directories...</p>
           </div>
 
-          <div *ngIf="!loading && faculty.length === 0" class="text-center table-empty">
+          <div *ngIf="!loading && teachers.length === 0" class="text-center table-empty">
             <span class="material-icons-outlined">badge</span>
-            <p>No faculty profiles stored in database yet. Add one on the left!</p>
+            <p>No teacher profiles stored in database yet. Add one on the left!</p>
           </div>
 
-          <div *ngIf="!loading && faculty.length > 0" class="table-responsive">
-            <table class="admin-faculty-table">
+          <div *ngIf="!loading && teachers.length > 0" class="table-responsive">
+            <table class="admin-teachers-table">
               <thead>
                 <tr>
                   <th>Photo</th>
@@ -157,7 +157,7 @@ interface FacultyMember {
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let member of faculty" [class.editing-row]="editingId === member.id">
+                <tr *ngFor="let member of teachers" [class.editing-row]="editingId === member.id">
                   <td>
                     <!-- Show photo if available, else initials avatar -->
                     <img *ngIf="member.photoUrl && !imgError[member.id]"
@@ -190,7 +190,7 @@ interface FacultyMember {
                         <button (click)="cancelDelete()" class="btn-action cancel-del" title="Cancel Delete">
                           <span class="material-icons-outlined">close</span>
                         </button>
-                        <button (click)="deleteMember(member.id)" class="btn-action confirm-del" title="Confirm Delete">
+                        <button (click)="deleteTeacher(member.id)" class="btn-action confirm-del" title="Confirm Delete">
                           <span class="material-icons-outlined">check</span>
                         </button>
                       </ng-container>
@@ -206,12 +206,12 @@ interface FacultyMember {
     </div>
   `,
   styles: [`
-    .faculty-admin-wrapper {
+    .teachers-admin-wrapper {
       display: flex;
       flex-direction: column;
     }
 
-    .faculty-admin-grid {
+    .teachers-admin-grid {
       display: grid;
       grid-template-columns: 1fr 1.5fr;
       gap: 2rem;
@@ -480,13 +480,13 @@ interface FacultyMember {
       margin-top: 1.5rem;
     }
 
-    .admin-faculty-table {
+    .admin-teachers-table {
       width: 100%;
       border-collapse: collapse;
       text-align: left;
     }
 
-    .admin-faculty-table th {
+    .admin-teachers-table th {
       color: var(--text-muted);
       font-size: 0.8rem;
       text-transform: uppercase;
@@ -495,7 +495,7 @@ interface FacultyMember {
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
 
-    .admin-faculty-table td {
+    .admin-teachers-table td {
       padding: 1rem;
       border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       font-size: 0.875rem;
@@ -594,12 +594,12 @@ interface FacultyMember {
     }
 
     @media (max-width: 992px) {
-      .faculty-admin-grid { grid-template-columns: 1fr; }
+      .teachers-admin-grid { grid-template-columns: 1fr; }
     }
   `]
 })
-export class FacultyComponent implements OnInit {
-  faculty: FacultyMember[] = [];
+export class TeachersComponent implements OnInit {
+  teachers: Teacher[] = [];
   loading = true;
   publishing = false;
   isEditing = false;
@@ -621,7 +621,7 @@ export class FacultyComponent implements OnInit {
   };
 
   ngOnInit() {
-    this.loadFaculty();
+    this.loadTeachers();
     this.loadConfig();
   }
 
@@ -707,7 +707,7 @@ export class FacultyComponent implements OnInit {
       const base64Data = (reader.result as string).split(',')[1];
       
       const payload = {
-        filename: `faculty_${Date.now()}_${file.name}`,
+        filename: `teacher_${Date.now()}_${file.name}`,
         mimeType: file.type,
         base64: base64Data
       };
@@ -769,26 +769,26 @@ export class FacultyComponent implements OnInit {
     return name.substring(0, 2).toUpperCase();
   }
 
-  loadFaculty() {
+  loadTeachers() {
     this.loading = true;
     this.imgError = {};
     get(ref(db, 'faculty'))
       .then((snapshot) => {
-        const list: FacultyMember[] = [];
+        const list: Teacher[] = [];
         if (snapshot.exists()) {
           const data = snapshot.val();
           Object.keys(data).forEach((key) => {
             const item = data[key];
-            if (item && item.type !== 'teacher') {
-              list.push({ id: key, ...item } as FacultyMember);
+            if (item && item.type === 'teacher') {
+              list.push({ id: key, ...item } as Teacher);
             }
           });
         }
-        this.faculty = list;
+        this.teachers = list;
         this.loading = false;
       })
       .catch((error) => {
-        console.error('Error fetching faculty list:', error);
+        console.error('Error fetching teachers list:', error);
         this.loading = false;
       });
   }
@@ -804,7 +804,8 @@ export class FacultyComponent implements OnInit {
       name: this.formData.name,
       role: this.formData.role,
       credentials: this.formData.credentials,
-      description: this.formData.description || ''
+      description: this.formData.description || '',
+      type: 'teacher'
     };
 
     if (convertedPhotoUrl) {
@@ -817,30 +818,30 @@ export class FacultyComponent implements OnInit {
         .then(() => {
           this.publishing = false;
           this.cancelEdit(form);
-          this.loadFaculty();
+          this.loadTeachers();
         })
         .catch((error) => {
           this.publishing = false;
-          console.error('Error updating faculty member:', error);
+          console.error('Error updating teacher:', error);
         });
     } else {
       // Add new
-      const newFacultyRef = push(ref(db, 'faculty'));
-      set(newFacultyRef, payload)
+      const newTeacherRef = push(ref(db, 'faculty'));
+      set(newTeacherRef, payload)
         .then(() => {
           this.publishing = false;
           form.resetForm();
           this.photoPreviewUrl = '';
-          this.loadFaculty();
+          this.loadTeachers();
         })
         .catch((error) => {
           this.publishing = false;
-          console.error('Error adding faculty doc:', error);
+          console.error('Error adding teacher:', error);
         });
     }
   }
 
-  startEdit(member: FacultyMember) {
+  startEdit(member: Teacher) {
     this.isEditing = true;
     this.editingId = member.id;
     this.photoUrlError = false;
@@ -872,13 +873,13 @@ export class FacultyComponent implements OnInit {
     this.deleteConfirmId = '';
   }
 
-  deleteMember(id: string) {
+  deleteTeacher(id: string) {
     this.deleteConfirmId = '';
     remove(ref(db, `faculty/${id}`))
-      .then(() => this.loadFaculty())
+      .then(() => this.loadTeachers())
       .catch((error) => {
-        console.error('Error deleting faculty profile:', error);
-        alert('Failed to delete faculty member: ' + error.message);
+        console.error('Error deleting teacher profile:', error);
+        alert('Failed to delete teacher member: ' + error.message);
       });
   }
 }

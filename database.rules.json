@@ -19,6 +19,14 @@
     "leadership": {
       ".read": true,
       ".write": "auth != null"
+    },
+    "teachers": {
+      ".read": true,
+      ".write": "auth != null"
+    },
+    "settings": {
+      ".read": "auth != null",
+      ".write": "auth != null"
     }
   }
 }

@@ -24,7 +24,7 @@ import { CommonModule } from '@angular/common';
           <a routerLink="/about" routerLinkActive="active" class="nav-item">About</a>
           <a routerLink="/services" routerLinkActive="active" class="nav-item">Courses</a>
           <a routerLink="/blog" routerLinkActive="active" class="nav-item">Blog</a>
-          <a routerLink="/adhunik" routerLinkActive="active" class="nav-item">Adhunik</a>
+          <a routerLink="/adhunik" routerLinkActive="active" class="nav-item">Xtreem Coaching</a>
           <a routerLink="/fastrack" routerLinkActive="active" class="nav-item">Fastrack</a>
           <a routerLink="/contact" routerLinkActive="active" class="nav-item">Contact</a>
           <a routerLink="/contact" class="btn-primary apply-btn">Apply Now</a>
@@ -42,7 +42,7 @@ import { CommonModule } from '@angular/common';
         <a routerLink="/about" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">About Us</a>
         <a routerLink="/services" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Courses</a>
         <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Blog & News</a>
-        <a routerLink="/adhunik" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Adhunik Academy</a>
+        <a routerLink="/adhunik" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Xtreem Coaching Center</a>
         <a routerLink="/fastrack" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Fastrack Academy</a>
         <a routerLink="/contact" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Contact Us</a>
         <a routerLink="/contact" (click)="closeMenu()" class="btn-primary drawer-apply">Apply Now</a>

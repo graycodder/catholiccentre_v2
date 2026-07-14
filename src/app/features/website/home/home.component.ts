@@ -37,7 +37,7 @@ import { CommonModule } from '@angular/common';
             <span class="material-icons-outlined card-icon">school</span>
             <h3>St. Joseph's College</h3>
             <p>Higher Secondary coaching & Degree/Postgraduate programs (B.A., B.Com, M.A., M.Com) under MG University.</p>
-            <a routerLink="/services" class="card-link">View Programs &rarr;</a>
+            <a [routerLink]="['/services']" [queryParams]="{ filter: 'college' }" class="card-link">View Programs &rarr;</a>
           </div>
 
           <!-- Language Academy -->
@@ -45,13 +45,13 @@ import { CommonModule } from '@angular/common';
             <span class="material-icons-outlined card-icon">translate</span>
             <h3>Language Academy</h3>
             <p>Cochin's oldest linguistic centre. German Language coaching (A1-B2) for Goethe/Telc/ÖSD certifications.</p>
-            <a routerLink="/services" class="card-link">Learn German &rarr;</a>
+            <a [routerLink]="['/services']" [queryParams]="{ filter: 'language' }" class="card-link">Learn German &rarr;</a>
           </div>
 
           <!-- Adhunik Professional Courses -->
           <div class="glass-card accent-card">
             <span class="material-icons-outlined card-icon">health_and_safety</span>
-            <h3>Adhunik Academy</h3>
+            <h3>Xtreem Coaching Center</h3>
             <p>Nursing Assistant training with government certification. 100% job placement assistance guaranteed.</p>
             <a routerLink="/adhunik" class="card-link font-gold">Read More &rarr;</a>
           </div>
@@ -63,6 +63,23 @@ import { CommonModule } from '@angular/common';
             <p>Government-approved computer diplomas (PGDCA, DCA, PDWD) and programming (Python, C, Web/Graphic Design).</p>
             <a routerLink="/fastrack" class="card-link">View IT Courses &rarr;</a>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Video Showcase Section -->
+    <section class="section-padding video-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <span class="badge badge-gold">Explore Campus</span>
+          <h2 class="serif-text gold-gradient-text">Welcome to St. Joseph's College: Explore Our Campus</h2>
+          <p>Take a virtual tour of our college facilities, classroom environment, and campus life.</p>
+        </div>
+        <div class="video-container glass-card">
+          <video controls width="100%" class="campus-video" poster="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1470&auto=format&fit=crop">
+            <source src="https://cochincatholiccentre.com/images/ILA%20Final%20new.mp4" type="video/mp4">
+            Your browser does not support the video tag.
+          </video>
         </div>
       </div>
     </section>
@@ -246,13 +263,14 @@ import { CommonModule } from '@angular/common';
     /* Heavenly Patron styling */
     .patron-grid {
       display: grid;
-      grid-template-columns: 1fr 1.2fr;
+      grid-template-columns: 1fr 1fr;
       gap: 4rem;
-      align-items: center;
+      align-items: stretch;
     }
 
     .patron-image-container {
       position: relative;
+      height: 100%;
     }
 
     .patron-frame {
@@ -260,12 +278,15 @@ import { CommonModule } from '@angular/common';
       border-radius: 20px;
       padding: 1rem;
       box-shadow: var(--shadow-glow);
+      height: 100%;
+      display: flex;
     }
 
     .patron-placeholder {
       background: linear-gradient(135deg, #0e1d35 0%, #060b13 100%);
       border-radius: 16px;
-      height: 380px;
+      width: 100%;
+      height: 100%;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -283,6 +304,21 @@ import { CommonModule } from '@angular/common';
     .patron-placeholder h4 {
       color: var(--text-light);
       font-size: 1.5rem;
+    }
+
+    .patron-details {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .patron-details .badge {
+      align-self: flex-start;
+    }
+
+    .patron-details .btn-primary {
+      margin-top: auto;
+      align-self: flex-start;
     }
 
     .patron-details h2 {
@@ -321,8 +357,16 @@ import { CommonModule } from '@angular/common';
 
     /* Location section styling */
     .location-grid {
-      align-items: center;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      align-items: stretch;
       gap: 4rem;
+    }
+
+    .location-text-card {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
     .location-text-card h3 {
@@ -337,14 +381,42 @@ import { CommonModule } from '@angular/common';
     }
 
     .location-btn {
+      margin-top: auto;
       align-self: flex-start;
     }
 
     .map-container {
-      height: 400px;
+      min-height: 380px;
+      height: 100%;
       border-radius: 16px;
       overflow: hidden;
       border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    /* Video Section styling */
+    .video-section {
+      background: linear-gradient(180deg, var(--bg-dark) 0%, #080f1b 100%);
+    }
+
+    .video-container {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 0.5rem;
+      border: 1px solid rgba(212, 175, 55, 0.2);
+      box-shadow: var(--shadow-glow);
+      border-radius: 20px;
+      overflow: hidden;
+      background: rgba(13, 23, 38, 0.6);
+      backdrop-filter: blur(12px);
+    }
+
+    .campus-video {
+      display: block;
+      width: 100%;
+      border-radius: 14px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      outline: none;
     }
 
     /* CTA Banner styling */

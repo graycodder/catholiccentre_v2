@@ -88,15 +88,25 @@ interface Lead {
                   </td>
                   <td (click)="$event.stopPropagation()">
                     <div class="action-buttons">
-                      <button *ngIf="lead.status !== 'verified'" (click)="updateStatus(lead.id, 'verified')" class="btn-action check" title="Mark as Verified">
-                        <span class="material-icons-outlined">check_circle</span>
-                      </button>
-                      <button *ngIf="lead.status !== 'rejected'" (click)="updateStatus(lead.id, 'rejected')" class="btn-action close" title="Mark as Rejected">
-                        <span class="material-icons-outlined">cancel</span>
-                      </button>
-                      <button (click)="deleteLead(lead.id)" class="btn-action delete" title="Delete Inquiry">
-                        <span class="material-icons-outlined">delete_outline</span>
-                      </button>
+                      <ng-container *ngIf="deleteConfirmId !== lead.id">
+                        <button *ngIf="lead.status !== 'verified'" (click)="updateStatus(lead.id, 'verified')" class="btn-action check" title="Mark as Verified">
+                          <span class="material-icons-outlined">check_circle</span>
+                        </button>
+                        <button *ngIf="lead.status !== 'rejected'" (click)="updateStatus(lead.id, 'rejected')" class="btn-action close" title="Mark as Rejected">
+                          <span class="material-icons-outlined">cancel</span>
+                        </button>
+                        <button (click)="confirmDelete(lead.id)" class="btn-action delete" title="Delete Inquiry">
+                          <span class="material-icons-outlined">delete_outline</span>
+                        </button>
+                      </ng-container>
+                      <ng-container *ngIf="deleteConfirmId === lead.id">
+                        <button (click)="cancelDelete()" class="btn-action cancel-del" title="Cancel Delete">
+                          <span class="material-icons-outlined">close</span>
+                        </button>
+                        <button (click)="deleteLead(lead.id)" class="btn-action confirm-del" title="Confirm Delete">
+                          <span class="material-icons-outlined">check</span>
+                        </button>
+                      </ng-container>
                     </div>
                   </td>
                 </tr>
@@ -296,6 +306,23 @@ interface Lead {
       color: #ff5274;
     }
 
+    .btn-action.cancel-del:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+    }
+
+    .btn-action.confirm-del {
+      background: rgba(184, 0, 31, 0.2);
+      border-color: var(--accent);
+      color: #ff5274;
+    }
+
+    .btn-action.confirm-del:hover {
+      background: rgba(184, 0, 31, 0.35);
+      box-shadow: 0 0 8px rgba(255, 82, 116, 0.3);
+    }
+
     /* Details Row */
     .details-row td {
       background: rgba(0, 0, 0, 0.2);
@@ -328,6 +355,7 @@ export class LeadsComponent implements OnInit {
   leads: Lead[] = [];
   filteredLeads: Lead[] = [];
   loading = true;
+  deleteConfirmId = '';
 
   searchQuery = '';
   statusFilter = 'all';
@@ -402,21 +430,29 @@ export class LeadsComponent implements OnInit {
       });
   }
 
+  confirmDelete(id: string) {
+    this.deleteConfirmId = id;
+  }
+
+  cancelDelete() {
+    this.deleteConfirmId = '';
+  }
+
   deleteLead(id: string) {
-    if (confirm('Are you sure you want to permanently delete this student inquiry?')) {
-      const leadRef = ref(db, `leads/${id}`);
-      remove(leadRef)
-        .then(() => {
-          this.leads = this.leads.filter(l => l.id !== id);
-          this.filterLeads();
-          if (this.expandedLeadId === id) {
-            this.expandedLeadId = null;
-          }
-        })
-        .catch((error) => {
-          console.error('Error deleting lead:', error);
-        });
-    }
+    this.deleteConfirmId = '';
+    const leadRef = ref(db, `leads/${id}`);
+    remove(leadRef)
+      .then(() => {
+        this.leads = this.leads.filter(l => l.id !== id);
+        this.filterLeads();
+        if (this.expandedLeadId === id) {
+          this.expandedLeadId = null;
+        }
+      })
+      .catch((error) => {
+        console.error('Error deleting lead:', error);
+        alert('Failed to delete inquiry: ' + error.message);
+      });
   }
 
   getCourseLabel(val: string): string {

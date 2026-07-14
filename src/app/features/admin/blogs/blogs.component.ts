@@ -46,7 +46,7 @@ interface BlogPost {
                 <select id="tag" name="tag" [(ngModel)]="formData.tag" required class="form-control">
                   <option value="Admissions">Admissions</option>
                   <option value="Language (ILA)">Language (ILA)</option>
-                  <option value="Adhunik">Adhunik Academy</option>
+                  <option value="Xtreem Coaching Center">Xtreem Coaching Center</option>
                   <option value="Fastrack">Fastrack IT</option>
                   <option value="General Notice">General Notice</option>
                   <option value="Events">Events &amp; Feast</option>
@@ -124,12 +124,22 @@ interface BlogPost {
                   <td>{{ post.date }}</td>
                   <td>
                     <div class="action-btns">
-                      <button (click)="startEdit(post)" class="btn-action edit" title="Edit Post">
-                        <span class="material-icons-outlined">edit</span>
-                      </button>
-                      <button (click)="deletePost(post.id)" class="btn-action delete" title="Delete Post">
-                        <span class="material-icons-outlined">delete_outline</span>
-                      </button>
+                      <ng-container *ngIf="deleteConfirmId !== post.id">
+                        <button (click)="startEdit(post)" class="btn-action edit" title="Edit Post">
+                          <span class="material-icons-outlined">edit</span>
+                        </button>
+                        <button (click)="confirmDelete(post.id)" class="btn-action delete" title="Delete Post">
+                          <span class="material-icons-outlined">delete_outline</span>
+                        </button>
+                      </ng-container>
+                      <ng-container *ngIf="deleteConfirmId === post.id">
+                        <button (click)="cancelDelete()" class="btn-action cancel-del" title="Cancel Delete">
+                          <span class="material-icons-outlined">close</span>
+                        </button>
+                        <button (click)="deletePost(post.id)" class="btn-action confirm-del" title="Confirm Delete">
+                          <span class="material-icons-outlined">check</span>
+                        </button>
+                      </ng-container>
                     </div>
                   </td>
                 </tr>
@@ -310,6 +320,23 @@ interface BlogPost {
       color: #ff5274;
     }
 
+    .btn-action.cancel-del:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+    }
+
+    .btn-action.confirm-del {
+      background: rgba(184, 0, 31, 0.2);
+      border-color: var(--accent);
+      color: #ff5274;
+    }
+
+    .btn-action.confirm-del:hover {
+      background: rgba(184, 0, 31, 0.35);
+      box-shadow: 0 0 8px rgba(255, 82, 116, 0.3);
+    }
+
     @media (max-width: 992px) {
       .blogs-admin-grid { grid-template-columns: 1fr; }
       .inline-fields { grid-template-columns: 1fr; gap: 0; }
@@ -322,6 +349,7 @@ export class BlogsComponent implements OnInit {
   publishing = false;
   isEditing = false;
   editingId = '';
+  deleteConfirmId = '';
 
   formData = {
     title: '',
@@ -436,11 +464,21 @@ export class BlogsComponent implements OnInit {
     };
   }
 
+  confirmDelete(id: string) {
+    this.deleteConfirmId = id;
+  }
+
+  cancelDelete() {
+    this.deleteConfirmId = '';
+  }
+
   deletePost(id: string) {
-    if (confirm('Permanently delete this announcement/blog article? This cannot be undone.')) {
-      remove(ref(db, `blogs/${id}`))
-        .then(() => this.loadPosts())
-        .catch((error) => console.error('Error deleting post:', error));
-    }
+    this.deleteConfirmId = '';
+    remove(ref(db, `blogs/${id}`))
+      .then(() => this.loadPosts())
+      .catch((error) => {
+        console.error('Error deleting post:', error);
+        alert('Failed to delete post: ' + error.message);
+      });
   }
 }

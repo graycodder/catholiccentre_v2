@@ -37,6 +37,10 @@ import { signOut } from 'firebase/auth';
             <span class="material-icons-outlined">badge</span>
             <span>Faculty & Staff</span>
           </a>
+          <a routerLink="/admin/teachers" routerLinkActive="active" class="menu-item" (click)="closeSidebar()">
+            <span class="material-icons-outlined">workspace_premium</span>
+            <span>Honorable Teachers</span>
+          </a>
           <a routerLink="/admin/blogs" routerLinkActive="active" class="menu-item" (click)="closeSidebar()">
             <span class="material-icons-outlined">article</span>
             <span>Blogs & News</span>
@@ -332,6 +336,8 @@ export class AdminLayoutComponent {
       this.activeSection = 'Course Offerings';
     } else if (url.includes('/faculty')) {
       this.activeSection = 'Faculty & Staff';
+    } else if (url.includes('/teachers')) {
+      this.activeSection = 'Honorable Teachers';
     } else if (url.includes('/blogs')) {
       this.activeSection = 'Blogs & Announcements';
     } else if (url.includes('/leadership')) {

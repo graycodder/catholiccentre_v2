@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterLink } from '@angular/router';
+import { RouterLink, ActivatedRoute } from '@angular/router';
 import { db } from '../../../core/firebase.config';
 import { ref, get } from 'firebase/database';
 
@@ -35,7 +35,7 @@ interface Course {
           <button [class.active]="activeFilter === 'all'" (click)="setFilter('all')">All Programs</button>
           <button [class.active]="activeFilter === 'college'" (click)="setFilter('college')">St. Joseph's College</button>
           <button [class.active]="activeFilter === 'language'" (click)="setFilter('language')">Language Academy (German)</button>
-          <button [class.active]="activeFilter === 'adhunik'" (click)="setFilter('adhunik')">Adhunik Healthcare</button>
+          <button [class.active]="activeFilter === 'adhunik'" (click)="setFilter('adhunik')">Xtreem Coaching Center</button>
           <button [class.active]="activeFilter === 'fastrack'" (click)="setFilter('fastrack')">Fastrack IT Academy</button>
         </div>
 
@@ -55,7 +55,16 @@ interface Course {
             </div>
             
             <h3 class="course-title">{{ course.name }}</h3>
-            <p class="course-desc">{{ course.description }}</p>
+            <p class="course-desc" *ngIf="course.description && course.description.trim()">
+              <span>
+                {{ isExpanded(course.id || course.name) ? course.description : getShortDesc(course.description) }}
+              </span>
+              <button type="button" *ngIf="course.description.length > 120" 
+                      (click)="toggleExpand(course.id || course.name)" 
+                      class="read-more-btn">
+                {{ isExpanded(course.id || course.name) ? 'Read Less' : 'Read More' }}
+              </button>
+            </p>
             
             <div class="course-meta">
               <p class="eligibility-text">
@@ -207,6 +216,9 @@ interface Course {
       font-size: 1.35rem;
       margin-bottom: 0.75rem;
       line-height: 1.3;
+      min-height: 3.5rem;
+      display: flex;
+      align-items: flex-end;
     }
 
     .course-desc {
@@ -214,6 +226,25 @@ interface Course {
       line-height: 1.6;
       margin-bottom: 1.5rem;
       flex-grow: 1;
+      min-height: 4.8rem;
+    }
+
+    .read-more-btn {
+      background: none;
+      border: none;
+      color: var(--gold);
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+      margin-left: 0.25rem;
+      text-decoration: underline;
+      display: inline-block;
+      transition: color 0.2s ease;
+    }
+
+    .read-more-btn:hover {
+      color: var(--text-light);
     }
 
     .course-meta {
@@ -300,6 +331,25 @@ export class ServicesComponent implements OnInit {
   filteredCourses: Course[] = [];
   loading = true;
   activeFilter = 'all';
+  expandedCourses: Record<string, boolean> = {};
+
+  constructor(private route: ActivatedRoute) {}
+
+  toggleExpand(key: string) {
+    this.expandedCourses[key] = !this.expandedCourses[key];
+  }
+
+  isExpanded(key: string): boolean {
+    return !!this.expandedCourses[key];
+  }
+
+  getShortDesc(desc: string): string {
+    if (!desc) return '';
+    if (desc.length > 120) {
+      return desc.substring(0, 110) + '...';
+    }
+    return desc;
+  }
 
   // Seed fallback courses
   private defaultCourses: Course[] = [
@@ -383,6 +433,13 @@ export class ServicesComponent implements OnInit {
 
   ngOnInit() {
     this.fetchCourses();
+    this.route.queryParams.subscribe(params => {
+      const filterParam = params['filter'];
+      if (filterParam && ['college', 'language', 'adhunik', 'fastrack', 'all'].includes(filterParam)) {
+        this.activeFilter = filterParam;
+        this.filterCoursesList();
+      }
+    });
   }
 
   fetchCourses() {
@@ -432,7 +489,7 @@ export class ServicesComponent implements OnInit {
     switch (cat) {
       case 'college': return "St. Joseph's College";
       case 'language': return 'German Language (ILA)';
-      case 'adhunik': return 'Adhunik Healthcare';
+      case 'adhunik': return 'Xtreem Coaching Center';
       case 'fastrack': return 'Fastrack IT Academy';
       default: return 'General';
     }

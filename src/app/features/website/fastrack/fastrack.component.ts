@@ -52,7 +52,7 @@ interface Course {
             </span>
             <h3>{{ course.name }}</h3>
             <p class="duration-label"><span class="material-icons-outlined">schedule</span> {{ course.duration }}</p>
-            <p class="summary">{{ course.description }}</p>
+            <p class="summary" *ngIf="course.description && course.description.trim()">{{ course.description }}</p>
             <div class="topics" *ngIf="course.highlights && course.highlights.length">
               <strong>Syllabus Highlights:</strong>
               <div class="tag-flex">

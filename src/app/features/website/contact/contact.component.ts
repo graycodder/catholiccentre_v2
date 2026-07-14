@@ -101,7 +101,7 @@ interface InquiryForm {
                 <option value="ma-english">St. Joseph's: M.A. English</option>
                 <option value="mcom-finance">St. Joseph's: M.Com Finance</option>
                 <option value="german-a1-b2">Language Academy: German (Goethe/Telc)</option>
-                <option value="nursing-assistant">Adhunik: Nursing Assistant Course</option>
+                <option value="nursing-assistant">Xtreem Coaching: Nursing Assistant Course</option>
                 <option value="pgdca">Fastrack: PGDCA (1 Year)</option>
                 <option value="dca">Fastrack: DCA (6 Months)</option>
                 <option value="programming-short">Fastrack: Programming Modules (Python/C++)</option>

@@ -41,9 +41,9 @@ import { RouterLink } from '@angular/router';
         <div class="footer-links">
           <h4>OUR ACADEMIES</h4>
           <ul>
-            <li><a routerLink="/services">St. Joseph's College</a></li>
-            <li><a routerLink="/services">Language Academy (ILA)</a></li>
-            <li><a routerLink="/adhunik">Adhunik Career Courses</a></li>
+            <li><a [routerLink]="['/services']" [queryParams]="{ filter: 'college' }">St. Joseph's College</a></li>
+            <li><a [routerLink]="['/services']" [queryParams]="{ filter: 'language' }">Language Academy (ILA)</a></li>
+            <li><a routerLink="/adhunik">Xtreem Coaching Center</a></li>
             <li><a routerLink="/fastrack">Fastrack Computer Academy</a></li>
           </ul>
         </div>

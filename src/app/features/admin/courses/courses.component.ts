@@ -40,7 +40,7 @@ interface Course {
                 <select id="category" name="category" [(ngModel)]="formData.category" required class="form-control">
                   <option value="college">St. Joseph's College</option>
                   <option value="language">Language Academy (German)</option>
-                  <option value="adhunik">Adhunik Healthcare</option>
+                  <option value="adhunik">Xtreem Coaching Center</option>
                   <option value="fastrack">Fastrack IT Academy</option>
                 </select>
               </div>
@@ -57,8 +57,8 @@ interface Course {
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="description">Course Description *</label>
-              <textarea id="description" name="description" [(ngModel)]="formData.description" required rows="3" class="form-control" placeholder="Briefly describe the course objectives and content..."></textarea>
+              <label class="form-label" for="description">Course Description</label>
+              <textarea id="description" name="description" [(ngModel)]="formData.description" rows="3" class="form-control" placeholder="Briefly describe the course objectives and content..."></textarea>
             </div>
 
             <div class="form-group">
@@ -114,12 +114,22 @@ interface Course {
                   <td>{{ course.duration }}</td>
                   <td>
                     <div class="actions-flex">
-                      <button (click)="editCourse(course)" class="btn-action edit" title="Edit Course">
-                        <span class="material-icons-outlined">edit</span>
-                      </button>
-                      <button (click)="deleteCourse(course.id)" class="btn-action delete" title="Delete Course">
-                        <span class="material-icons-outlined">delete_outline</span>
-                      </button>
+                      <ng-container *ngIf="deleteConfirmId !== course.id">
+                        <button (click)="editCourse(course)" class="btn-action edit" title="Edit Course">
+                          <span class="material-icons-outlined">edit</span>
+                        </button>
+                        <button (click)="confirmDelete(course.id)" class="btn-action delete" title="Delete Course">
+                          <span class="material-icons-outlined">delete_outline</span>
+                        </button>
+                      </ng-container>
+                      <ng-container *ngIf="deleteConfirmId === course.id">
+                        <button (click)="cancelDelete()" class="btn-action cancel-del" title="Cancel Delete">
+                          <span class="material-icons-outlined">close</span>
+                        </button>
+                        <button (click)="deleteCourse(course.id)" class="btn-action confirm-del" title="Confirm Delete">
+                          <span class="material-icons-outlined">check</span>
+                        </button>
+                      </ng-container>
                     </div>
                   </td>
                 </tr>
@@ -262,6 +272,23 @@ interface Course {
       color: #ff5274;
     }
 
+    .btn-action.cancel-del:hover {
+      background: rgba(255, 255, 255, 0.08);
+      border-color: rgba(255, 255, 255, 0.2);
+      color: var(--text-light);
+    }
+
+    .btn-action.confirm-del {
+      background: rgba(184, 0, 31, 0.2);
+      border-color: var(--accent);
+      color: #ff5274;
+    }
+
+    .btn-action.confirm-del:hover {
+      background: rgba(184, 0, 31, 0.35);
+      box-shadow: 0 0 8px rgba(255, 82, 116, 0.3);
+    }
+
     @media (max-width: 992px) {
       .courses-admin-grid { grid-template-columns: 1fr; }
       .inline-fields { grid-template-columns: 1fr; gap: 0; }
@@ -274,6 +301,7 @@ export class CoursesComponent implements OnInit {
   publishing = false;
   isEditing = false;
   editingCourseId: string | null = null;
+  deleteConfirmId = '';
 
   formData = {
     name: '',
@@ -316,7 +344,7 @@ export class CoursesComponent implements OnInit {
       name: course.name,
       category: course.category,
       duration: course.duration,
-      description: course.description,
+      description: course.description || '',
       eligibility: course.eligibility
     };
     this.highlightsInput = course.highlights ? course.highlights.join(', ') : '';
@@ -349,6 +377,7 @@ export class CoursesComponent implements OnInit {
       const courseRef = ref(db, `courses/${this.editingCourseId}`);
       set(courseRef, {
         ...this.formData,
+        description: this.formData.description || '',
         highlights
       })
         .then(() => {
@@ -370,6 +399,7 @@ export class CoursesComponent implements OnInit {
       const newCourseRef = push(coursesRef);
       set(newCourseRef, {
         ...this.formData,
+        description: this.formData.description || '',
         highlights
       })
         .then(() => {
@@ -387,26 +417,35 @@ export class CoursesComponent implements OnInit {
     }
   }
 
+  confirmDelete(id: string) {
+    this.deleteConfirmId = id;
+  }
+
+  cancelDelete() {
+    this.deleteConfirmId = '';
+  }
+
   deleteCourse(id: string) {
-    if (confirm('Permanently delete this course offering from database? This cannot be undone.')) {
-      const courseRef = ref(db, `courses/${id}`);
-      remove(courseRef)
-        .then(() => {
-          // If the deleted course was currently being edited, cancel the edit state
-          if (this.isEditing && this.editingCourseId === id) {
-            this.isEditing = false;
-            this.editingCourseId = null;
-            this.highlightsInput = '';
-          }
-          this.loadCourses();
-        })
-        .catch((error) => {
-          console.error('Error deleting course:', error);
-        });
-    }
+    this.deleteConfirmId = '';
+    const courseRef = ref(db, `courses/${id}`);
+    remove(courseRef)
+      .then(() => {
+        // If the deleted course was currently being edited, cancel the edit state
+        if (this.isEditing && this.editingCourseId === id) {
+          this.isEditing = false;
+          this.editingCourseId = null;
+          this.highlightsInput = '';
+        }
+        this.loadCourses();
+      })
+      .catch((error) => {
+        console.error('Error deleting course:', error);
+        alert('Failed to delete course: ' + error.message);
+      });
   }
 
   getExcerpt(text: string): string {
+    if (!text) return '';
     if (text.length > 80) return text.substring(0, 80) + '...';
     return text;
   }
