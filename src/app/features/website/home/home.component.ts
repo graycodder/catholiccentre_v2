@@ -229,6 +229,42 @@ import { CommonModule } from '@angular/common';
       font-size: 2.5rem;
       color: var(--gold);
       margin-bottom: 1.25rem;
+      flex-shrink: 0;
+    }
+
+    /* Academy grid — uniform card alignment */
+    .academy-grid .glass-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      min-height: 380px;
+    }
+
+    .academy-grid .glass-card h3 {
+      font-size: 1.25rem;
+      margin-bottom: 1rem;
+      min-height: 2.8rem;       /* reserves space for up to 2 lines */
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.4;
+    }
+
+    .academy-grid .glass-card p {
+      font-size: 0.9rem;
+      margin-bottom: 1.5rem;
+      flex: 1;                  /* stretches so link is always at bottom */
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      line-height: 1.6;
+    }
+
+    .academy-grid .card-link {
+      margin-top: auto;
+      flex-shrink: 0;
     }
 
     .glass-card h3 {
@@ -474,4 +510,4 @@ import { CommonModule } from '@angular/common';
     }
   `]
 })
-export class HomeComponent {}
+export class HomeComponent { }
