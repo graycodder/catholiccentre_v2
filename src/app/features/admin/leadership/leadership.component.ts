@@ -48,9 +48,9 @@ interface Leader {
             </div>
 
             <div class="form-group">
-              <label class="form-label" for="credentials">Credentials / Degrees *</label>
+              <label class="form-label" for="credentials">Credentials / Degrees</label>
               <input type="text" id="credentials" name="credentials" [(ngModel)]="formData.credentials"
-                     required class="form-control"
+                     class="form-control"
                      placeholder="e.g. M.B.A., B.Th., M.Ed.">
             </div>
 
