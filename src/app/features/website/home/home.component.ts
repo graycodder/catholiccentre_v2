@@ -40,15 +40,15 @@ import { CommonModule } from '@angular/common';
             <a [routerLink]="['/services']" [queryParams]="{ filter: 'college' }" class="card-link">View Programs &rarr;</a>
           </div>
 
-          <!-- Language Academy -->
+          <!-- Fastrack Computer Center -->
           <div class="glass-card gold-card">
-            <span class="material-icons-outlined card-icon">translate</span>
-            <h3>Language Academy</h3>
-            <p>Cochin's oldest linguistic centre. German Language coaching (A1-B2) for Goethe/Telc/ÖSD certifications.</p>
-            <a [routerLink]="['/services']" [queryParams]="{ filter: 'language' }" class="card-link">Learn German &rarr;</a>
+            <span class="material-icons-outlined card-icon">terminal</span>
+            <h3>Fastrack Computer Center</h3>
+            <p>Government-approved computer diplomas (PGDCA, DCA, PDWD) and programming (Python, C, Web/Graphic Design).</p>
+            <a routerLink="/fastrack" class="card-link">View IT Courses &rarr;</a>
           </div>
 
-          <!-- Adhunik Professional Courses -->
+          <!-- Xtreem Coaching Center -->
           <div class="glass-card accent-card">
             <span class="material-icons-outlined card-icon">health_and_safety</span>
             <h3>Xtreem Coaching Center</h3>
@@ -56,12 +56,12 @@ import { CommonModule } from '@angular/common';
             <a routerLink="/adhunik" class="card-link font-gold">Read More &rarr;</a>
           </div>
 
-          <!-- Fastrack Computer Academy -->
+          <!-- ILA – Language Academy -->
           <div class="glass-card gold-card">
-            <span class="material-icons-outlined card-icon">terminal</span>
-            <h3>Fastrack IT Academy</h3>
-            <p>Government-approved computer diplomas (PGDCA, DCA, PDWD) and programming (Python, C, Web/Graphic Design).</p>
-            <a routerLink="/fastrack" class="card-link">View IT Courses &rarr;</a>
+            <span class="material-icons-outlined card-icon">translate</span>
+            <h3>ILA – Language Academy</h3>
+            <p>Cochin's oldest linguistic centre. German Language coaching (A1-B2) for Goethe/Telc/ÖSD certifications.</p>
+            <a [routerLink]="['/services']" [queryParams]="{ filter: 'language' }" class="card-link">Learn German &rarr;</a>
           </div>
         </div>
       </div>
