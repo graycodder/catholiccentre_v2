@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
       <div class="nav-container">
         <!-- Logo Area -->
         <a routerLink="/" class="nav-logo">
-          <span class="material-icons-outlined gold-text logo-icon">church</span>
+          <img src="logo.png" alt="Catholic Centre Logo" class="logo-img">
           <div class="logo-text">
             <h2 class="serif-text logo-title">CATHOLIC CENTRE</h2>
             <p class="logo-subtitle">THOPPUMPADY</p>
@@ -23,11 +23,11 @@ import { CommonModule } from '@angular/common';
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">Home</a>
           <a routerLink="/about" routerLinkActive="active" class="nav-item">About</a>
           <a routerLink="/services" routerLinkActive="active" class="nav-item">Courses</a>
-          <a routerLink="/blog" routerLinkActive="active" class="nav-item">Blog</a>
-          <a routerLink="/adhunik" routerLinkActive="active" class="nav-item">Xtreem Coaching</a>
           <a routerLink="/fastrack" routerLinkActive="active" class="nav-item">Fastrack</a>
+          <a routerLink="/adhunik" routerLinkActive="active" class="nav-item">Xtreem</a>
+          <a routerLink="/ila" routerLinkActive="active" class="nav-item">ILA</a>
+          <a routerLink="/blog" routerLinkActive="active" class="nav-item">Blog</a>
           <a routerLink="/contact" routerLinkActive="active" class="nav-item">Contact</a>
-          <a routerLink="/contact" class="btn-primary apply-btn">Apply Now</a>
         </div>
 
         <!-- Mobile Menu Toggle -->
@@ -41,9 +41,10 @@ import { CommonModule } from '@angular/common';
         <a routerLink="/" (click)="closeMenu()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="drawer-item">Home</a>
         <a routerLink="/about" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">About Us</a>
         <a routerLink="/services" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Courses</a>
-        <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Blog & News</a>
-        <a routerLink="/adhunik" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Xtreem Coaching Center</a>
         <a routerLink="/fastrack" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Fastrack Academy</a>
+        <a routerLink="/adhunik" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Xtreem Coaching Center</a>
+        <a routerLink="/ila" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">ILA Language Academy</a>
+        <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Blog & News</a>
         <a routerLink="/contact" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Contact Us</a>
         <a routerLink="/contact" (click)="closeMenu()" class="btn-primary drawer-apply">Apply Now</a>
       </div>
@@ -57,17 +58,17 @@ import { CommonModule } from '@angular/common';
       width: 100%;
       height: 80px;
       z-index: 1000;
-      background: rgba(7, 15, 25, 0.7);
+      background: rgba(252, 251, 249, 0.85);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
       transition: all 0.3s ease;
     }
 
     .navbar.scrolled {
       height: 70px;
-      background: rgba(7, 15, 25, 0.9);
-      box-shadow: 0 10px 30px -10px rgba(0, 0, 0, 0.5);
+      background: rgba(252, 251, 249, 0.95);
+      box-shadow: 0 10px 30px -10px rgba(11, 25, 44, 0.08);
     }
 
     .nav-container {
@@ -87,9 +88,15 @@ import { CommonModule } from '@angular/common';
       text-decoration: none;
     }
 
-    .logo-icon {
-      font-size: 2.2rem;
-      color: var(--gold);
+    .logo-img {
+      height: 48px;
+      width: auto;
+      object-fit: contain;
+      transition: height 0.3s ease;
+    }
+
+    .navbar.scrolled .logo-img {
+      height: 40px;
     }
 
     .logo-text {
@@ -100,7 +107,7 @@ import { CommonModule } from '@angular/common';
     .logo-title {
       font-size: 1.25rem;
       letter-spacing: 0.05em;
-      color: var(--text-light);
+      color: var(--text-dark);
       margin: 0;
       line-height: 1.1;
     }
@@ -121,7 +128,7 @@ import { CommonModule } from '@angular/common';
 
     .nav-item {
       text-decoration: none;
-      color: var(--text-light);
+      color: var(--text-dark);
       font-size: 0.9rem;
       font-weight: 500;
       padding: 0.5rem 0;
@@ -163,7 +170,7 @@ import { CommonModule } from '@angular/common';
       display: none;
       background: transparent;
       border: none;
-      color: var(--text-light);
+      color: var(--text-dark);
       cursor: pointer;
     }
 
@@ -189,7 +196,7 @@ import { CommonModule } from '@angular/common';
       opacity: 0;
       pointer-events: none;
       transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .mobile-drawer.open {
@@ -200,7 +207,7 @@ import { CommonModule } from '@angular/common';
 
     .drawer-item {
       text-decoration: none;
-      color: var(--text-light);
+      color: var(--text-dark);
       font-size: 1.25rem;
       font-weight: 600;
       padding: 0.5rem 1rem;
@@ -216,6 +223,15 @@ import { CommonModule } from '@angular/common';
       width: 80%;
       max-width: 300px;
       margin-top: 1rem;
+    }
+
+    @media (max-width: 1100px) {
+      .nav-links {
+        gap: 0.75rem;
+      }
+      .nav-item {
+        font-size: 0.85rem;
+      }
     }
 
     @media (max-width: 992px) {

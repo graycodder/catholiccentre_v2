@@ -12,6 +12,7 @@ interface Course {
   description: string;
   eligibility: string;
   highlights?: string[];
+  imageUrl?: string;
 }
 
 @Component({
@@ -32,11 +33,11 @@ interface Course {
       <div class="container">
         <!-- Category Filter Tabs -->
         <div class="filter-tabs">
-          <button [class.active]="activeFilter === 'all'" (click)="setFilter('all')">All Programs</button>
-          <button [class.active]="activeFilter === 'college'" (click)="setFilter('college')">St. Joseph's College</button>
-          <button [class.active]="activeFilter === 'language'" (click)="setFilter('language')">Language Academy (German)</button>
-          <button [class.active]="activeFilter === 'adhunik'" (click)="setFilter('adhunik')">Xtreem Coaching Center</button>
-          <button [class.active]="activeFilter === 'fastrack'" (click)="setFilter('fastrack')">Fastrack IT Academy</button>
+          <button class="btn-all" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">All Programs</button>
+          <button class="btn-college" [class.active]="activeFilter === 'college'" (click)="setFilter('college')">St. Joseph's College</button>
+          <button class="btn-fastrack" [class.active]="activeFilter === 'fastrack'" (click)="setFilter('fastrack')">Fastrack Computer Center</button>
+          <button class="btn-adhunik" [class.active]="activeFilter === 'adhunik'" (click)="setFilter('adhunik')">Xtreem Coaching Center</button>
+          <button class="btn-language" [class.active]="activeFilter === 'language'" (click)="setFilter('language')">ILA</button>
         </div>
 
         <div *ngIf="loading" class="loading-state text-center">
@@ -47,6 +48,11 @@ interface Course {
         <!-- Course Cards Grid -->
         <div *ngIf="!loading" class="grid-cols-3 courses-grid">
           <div *ngFor="let course of filteredCourses" class="glass-card course-card" [class.gold-border]="course.category === 'language' || course.category === 'fastrack'">
+            <!-- Course Image Banner -->
+            <div *ngIf="course.imageUrl" class="course-card-image">
+              <img [src]="convertGoogleDriveUrl(course.imageUrl)" alt="{{ course.name }}" referrerpolicy="no-referrer">
+            </div>
+
             <div class="card-header-flex">
               <span class="badge" [class.badge-burgundy]="course.category === 'college' || course.category === 'adhunik'" [class.badge-gold]="course.category === 'language' || course.category === 'fastrack'">
                 {{ getCategoryLabel(course.category) }}
@@ -80,6 +86,9 @@ interface Course {
 
             <div class="card-footer">
               <a routerLink="/contact" class="btn-outline apply-btn-card">Apply Now</a>
+              <a *ngIf="course.imageUrl" [href]="course.imageUrl" target="_blank" class="brochure-btn-card">
+                <span class="material-icons-outlined" style="font-size: 1.1rem; margin-right: 0.25rem;">download</span> Brochure
+              </a>
             </div>
           </div>
         </div>
@@ -115,9 +124,9 @@ interface Course {
   styles: [`
     .services-hero {
       padding: 6rem 0;
-      background: linear-gradient(rgba(7, 15, 25, 0.85), rgba(7, 15, 25, 0.99)), url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
+      background: linear-gradient(rgba(252, 251, 249, 0.75), rgba(252, 251, 249, 0.96)), url('https://images.unsplash.com/photo-1434030216411-0b793f4b4173?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
       background-size: cover;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .services-hero h1 {
@@ -135,8 +144,8 @@ interface Course {
     }
 
     .filter-tabs button {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(11, 25, 44, 0.03);
+      border: 1px solid rgba(11, 25, 44, 0.08);
       color: var(--text-muted);
       padding: 0.6rem 1.5rem;
       border-radius: 30px;
@@ -149,7 +158,7 @@ interface Course {
     .filter-tabs button:hover,
     .filter-tabs button.active {
       background: var(--accent);
-      color: var(--text-light);
+      color: var(--text-on-dark);
       border-color: var(--accent);
       box-shadow: var(--shadow-burgundy);
     }
@@ -157,7 +166,7 @@ interface Course {
     .filter-tabs button.active[class*="language"],
     .filter-tabs button.active[class*="fastrack"] {
       background: var(--gold);
-      color: #000;
+      color: var(--primary);
       border-color: var(--gold);
       box-shadow: var(--shadow-glow);
     }
@@ -186,6 +195,27 @@ interface Course {
       display: flex;
       flex-direction: column;
       height: 100%;
+    }
+
+    .course-card-image {
+      width: 100%;
+      height: 180px;
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      margin: -2rem -2rem 1.5rem -2rem;
+      width: calc(100% + 4rem);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.08);
+    }
+
+    .course-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.3s ease;
+    }
+
+    .course-card:hover .course-card-image img {
+      transform: scale(1.05);
     }
 
     .course-card.gold-border:hover {
@@ -244,11 +274,11 @@ interface Course {
     }
 
     .read-more-btn:hover {
-      color: var(--text-light);
+      color: var(--text-dark);
     }
 
     .course-meta {
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(11, 25, 44, 0.08);
       padding-top: 1rem;
       margin-bottom: 1.5rem;
       font-size: 0.85rem;
@@ -259,7 +289,7 @@ interface Course {
     }
 
     .eligibility-text strong, .highlights-box strong {
-      color: var(--text-light);
+      color: var(--text-dark);
     }
 
     .highlights-box ul {
@@ -274,15 +304,38 @@ interface Course {
 
     .card-footer {
       margin-top: auto;
+      display: flex;
+      gap: 0.75rem;
     }
 
-    .apply-btn-card {
-      width: 100%;
+    .apply-btn-card, .brochure-btn-card {
+      flex: 1;
+      text-align: center;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 42px;
+      font-size: 0.85rem;
+      padding: 0.5rem 0.25rem;
+    }
+
+    .brochure-btn-card {
+      border: 1px solid var(--gold);
+      color: var(--gold);
+      border-radius: 6px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: var(--transition-smooth);
+    }
+
+    .brochure-btn-card:hover {
+      background: rgba(212, 175, 55, 0.08);
     }
 
     /* Language Academy specific banner style */
     .language-academy-banner {
-      background: #040910;
+      background: #f4f3ef;
+      border-top: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .banner-grid {
@@ -488,10 +541,34 @@ export class ServicesComponent implements OnInit {
   getCategoryLabel(cat: string): string {
     switch (cat) {
       case 'college': return "St. Joseph's College";
-      case 'language': return 'German Language (ILA)';
+      case 'language': return 'ILA';
       case 'adhunik': return 'Xtreem Coaching Center';
-      case 'fastrack': return 'Fastrack IT Academy';
+      case 'fastrack': return 'Fastrack Computer Center';
       default: return 'General';
     }
+  }
+
+  convertGoogleDriveUrl(url: string): string {
+    if (!url || !url.trim()) return '';
+    url = url.trim();
+
+    const ensureSize = (lh3Url: string): string => {
+      if (/=[swh]\d/.test(lh3Url) || lh3Url.endsWith('=s0')) return lh3Url;
+      return lh3Url + '=s0';
+    };
+
+    if (url.includes('lh3.googleusercontent.com')) return ensureSize(url);
+
+    const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch) {
+      return `https://lh3.googleusercontent.com/d/${fileMatch[1]}=s0`;
+    }
+
+    const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idMatch) {
+      return `https://lh3.googleusercontent.com/d/${idMatch[1]}=s0`;
+    }
+
+    return url;
   }
 }

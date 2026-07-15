@@ -11,7 +11,7 @@ import { RouterLink } from '@angular/router';
         <!-- Main Brand Column -->
         <div class="footer-brand">
           <a routerLink="/" class="footer-logo">
-            <span class="material-icons-outlined gold-text logo-icon">church</span>
+            <img src="logo.png" alt="Catholic Centre Logo" class="logo-img">
             <h3 class="serif-text">CATHOLIC CENTRE</h3>
           </a>
           <p class="footer-desc">
@@ -33,7 +33,6 @@ import { RouterLink } from '@angular/router';
             <li><a routerLink="/services">Our Courses</a></li>
             <li><a routerLink="/blog">News & Blog</a></li>
             <li><a routerLink="/contact">Contact Us</a></li>
-            <li><a routerLink="/admin/login">Admin Portal</a></li>
           </ul>
         </div>
 
@@ -42,9 +41,9 @@ import { RouterLink } from '@angular/router';
           <h4>OUR ACADEMIES</h4>
           <ul>
             <li><a [routerLink]="['/services']" [queryParams]="{ filter: 'college' }">St. Joseph's College</a></li>
-            <li><a [routerLink]="['/services']" [queryParams]="{ filter: 'language' }">Language Academy (ILA)</a></li>
+            <li><a routerLink="/ila">International Language Academy (ILA)</a></li>
             <li><a routerLink="/adhunik">Xtreem Coaching Center</a></li>
-            <li><a routerLink="/fastrack">Fastrack Computer Academy</a></li>
+            <li><a routerLink="/fastrack">Fastrack Computer Center</a></li>
           </ul>
         </div>
 
@@ -57,7 +56,7 @@ import { RouterLink } from '@angular/router';
           </p>
           <p class="contact-item">
             <span class="material-icons-outlined gold-text">phone</span>
-            <a href="tel:+914842981533">+0 484 298 15 33</a>, <a href="tel:+914842231533">223 15 33</a>
+            <a href="tel:+914842981533">+0 484 298 15 33</a>, <a href="tel:+914842231533">223 15 33</a>, 
           </p>
           <p class="contact-item">
             <span class="material-icons-outlined gold-text">smartphone</span>
@@ -80,8 +79,8 @@ import { RouterLink } from '@angular/router';
   `,
   styles: [`
     .footer {
-      background: #040910;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      background: #0b192c;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding: 5rem 0 0 0;
       margin-top: auto;
     }
@@ -104,21 +103,25 @@ import { RouterLink } from '@angular/router';
       align-items: center;
       gap: 0.5rem;
       text-decoration: none;
-      color: var(--text-light);
+      color: #ffffff;
     }
 
-    .logo-icon {
-      font-size: 2rem;
+    .logo-img {
+      height: 40px;
+      width: auto;
+      object-fit: contain;
     }
 
     .footer-logo h3 {
       font-size: 1.35rem;
       letter-spacing: 0.05em;
+      color: #ffffff;
     }
 
     .footer-desc {
       font-size: 0.9rem;
       line-height: 1.6;
+      color: rgba(248, 250, 252, 0.75);
     }
 
     .social-icons {
@@ -128,7 +131,7 @@ import { RouterLink } from '@angular/router';
     }
 
     .social-icons a {
-      color: var(--text-muted);
+      color: rgba(248, 250, 252, 0.6);
       transition: var(--transition-smooth);
     }
 
@@ -140,7 +143,7 @@ import { RouterLink } from '@angular/router';
     .footer-links h4, .footer-contact h4 {
       font-size: 0.85rem;
       letter-spacing: 0.1em;
-      color: var(--text-light);
+      color: #ffffff;
       margin-bottom: 1.5rem;
       font-weight: 700;
     }
@@ -156,7 +159,7 @@ import { RouterLink } from '@angular/router';
 
     .footer-links a {
       text-decoration: none;
-      color: var(--text-muted);
+      color: rgba(248, 250, 252, 0.7);
       font-size: 0.9rem;
       transition: var(--transition-smooth);
     }
@@ -177,10 +180,11 @@ import { RouterLink } from '@angular/router';
       gap: 0.75rem;
       font-size: 0.9rem;
       line-height: 1.5;
+      color: rgba(248, 250, 252, 0.75);
     }
 
     .contact-item a {
-      color: var(--text-muted);
+      color: rgba(248, 250, 252, 0.7);
       text-decoration: none;
       transition: var(--transition-smooth);
     }
@@ -190,9 +194,9 @@ import { RouterLink } from '@angular/router';
     }
 
     .footer-bottom {
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding: 1.5rem 0;
-      background: #02050a;
+      background: #071120;
     }
 
     .footer-bottom-flex {
@@ -200,7 +204,7 @@ import { RouterLink } from '@angular/router';
       justify-content: space-between;
       align-items: center;
       font-size: 0.8rem;
-      color: var(--text-muted);
+      color: rgba(248, 250, 252, 0.5);
     }
 
     @media (max-width: 992px) {
@@ -223,4 +227,4 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class FooterComponent {}
+export class FooterComponent { }

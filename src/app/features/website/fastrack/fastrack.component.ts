@@ -23,7 +23,7 @@ interface Course {
     <section class="fastrack-hero">
       <div class="container animate-fade-in">
         <span class="badge badge-gold">Government Approved Courses</span>
-        <h1 class="serif-text">Fastrack IT Academy</h1>
+        <h1 class="serif-text">Fastrack Computer Center</h1>
         <p class="hero-sub font-gold">Professional Computer Diplomas & Modern Tech Education</p>
         <p class="desc">
           Enhance your digital credentials with certified courses. From administrative office automation and financial accounting software to modern coding languages like Python, we bridge the gap between education and IT recruitment.
@@ -35,8 +35,8 @@ interface Course {
     <!-- Detailed Courses Offered -->
     <section class="section-padding courses-detailed">
       <div class="container">
-        <div class="section-header text-center">
-          <h2>OUR DIPLOMA CURRICULUMS</h2>
+        <div class="section-header">
+          <h2>Our Diploma Curriculums</h2>
           <p>Carefully structured schedules matching both public sector jobs qualification guidelines and private IT standards.</p>
         </div>
 
@@ -73,7 +73,7 @@ interface Course {
           <div class="short-info-text">
             <h2>Specialized Programming & Career Courses</h2>
             <p>
-              Looking to specialize in custom technologies rather than full-length diplomas? Fastrack Academy provides dedicated short-term batches with hands-on practice terminals.
+              Looking to specialize in custom technologies rather than full-length diplomas? Fastrack Computer Center provides dedicated short-term batches with hands-on practice terminals.
             </p>
             <div class="short-list">
               <div class="short-list-item">
@@ -113,9 +113,9 @@ interface Course {
   styles: [`
     .fastrack-hero {
       padding: 8rem 0 6rem 0;
-      background: linear-gradient(rgba(11, 25, 44, 0.75), rgba(7, 15, 25, 0.98)), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
+      background: linear-gradient(rgba(252, 251, 249, 0.75), rgba(252, 251, 249, 0.96)), url('https://images.unsplash.com/photo-1517694712202-14dd9538aa97?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
       background-size: cover;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .fastrack-hero h1 {
@@ -135,6 +135,14 @@ interface Course {
       color: var(--text-muted);
       max-width: 700px;
       margin-bottom: 2.5rem;
+    }
+
+    .courses-detailed .section-header {
+      text-align: left;
+    }
+    
+    .courses-detailed .section-header p {
+      margin: 0.5rem 0 0 0;
     }
 
     /* Curriculums grid */
@@ -163,7 +171,7 @@ interface Course {
     }
 
     .topics {
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(11, 25, 44, 0.08);
       padding-top: 1rem;
       margin-bottom: 1.5rem;
     }
@@ -184,8 +192,9 @@ interface Course {
     }
 
     .topic-tag {
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      background: rgba(11, 25, 44, 0.03);
+      border: 1px solid rgba(11, 25, 44, 0.08);
+      color: var(--text-dark);
       padding: 0.35rem 0.75rem;
       border-radius: 4px;
       font-size: 0.8rem;
@@ -194,7 +203,7 @@ interface Course {
 
     .elig {
       font-size: 0.9rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(11, 25, 44, 0.08);
       padding-top: 1rem;
       margin: 0;
     }
@@ -217,7 +226,9 @@ interface Course {
 
     /* Short term section */
     .short-terms {
-      background: #040910;
+      background: #f4f3ef;
+      border-top: 1px solid rgba(11, 25, 44, 0.06);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .short-grid {
@@ -254,7 +265,7 @@ interface Course {
     }
 
     .short-list-item strong {
-      color: var(--text-light);
+      color: var(--text-dark);
     }
 
     .short-list-item p {
@@ -278,7 +289,7 @@ interface Course {
     .tech-icons {
       display: flex;
       justify-content: space-around;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(11, 25, 44, 0.08);
       padding-top: 2rem;
     }
 

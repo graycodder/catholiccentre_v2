@@ -1,8 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { db } from '../../../core/firebase.config';
-import { ref, push, set } from 'firebase/database';
+import { ref, push, set, get } from 'firebase/database';
+
+interface Course {
+  id?: string;
+  name: string;
+  category: 'college' | 'language' | 'adhunik' | 'fastrack';
+  duration: string;
+}
 
 interface InquiryForm {
   name: string;
@@ -50,7 +57,10 @@ interface InquiryForm {
                 <h4>Call Center</h4>
                 <p>+0 484 298 15 33</p>
                 <p>+0 484 223 15 33</p>
+                <p>+0 484 319 01 83</p>
                 <p>920 733 15 33 (Mobile)</p>
+                <p>938 344 71 49 (Mobile)</p>
+                <p>999 548 15 33 (Mobile)</p>
               </div>
             </div>
 
@@ -59,6 +69,7 @@ interface InquiryForm {
               <div>
                 <h4>Official Email</h4>
                 <p>stjosephscolleget&#64;gmail.com</p>
+                <p>ila.stjoseph2024&#64;gmail.com</p>
               </div>
             </div>
           </div>
@@ -93,18 +104,30 @@ interface InquiryForm {
               <label class="form-label" for="course">Preferred Academy & Course *</label>
               <select id="course" name="course" [(ngModel)]="formData.course" required #courseField="ngModel" class="form-control">
                 <option value="" disabled>Select program...</option>
-                <option value="plus-two-commerce">St. Joseph's: Plus Two (Commerce)</option>
-                <option value="plus-two-humanities">St. Joseph's: Plus Two (Humanities)</option>
-                <option value="bcom-tax">St. Joseph's: B.Com Taxation</option>
-                <option value="bcom-coop">St. Joseph's: B.Com Co-operation</option>
-                <option value="ba-english">St. Joseph's: B.A. English</option>
-                <option value="ma-english">St. Joseph's: M.A. English</option>
-                <option value="mcom-finance">St. Joseph's: M.Com Finance</option>
-                <option value="german-a1-b2">Language Academy: German (Goethe/Telc)</option>
-                <option value="nursing-assistant">Xtreem Coaching: Nursing Assistant Course</option>
-                <option value="pgdca">Fastrack: PGDCA (1 Year)</option>
-                <option value="dca">Fastrack: DCA (6 Months)</option>
-                <option value="programming-short">Fastrack: Programming Modules (Python/C++)</option>
+                
+                <optgroup label="St. Joseph's College" *ngIf="hasCoursesForCategory('college')">
+                  <option *ngFor="let c of getCoursesByCategory('college')" [value]="c.name">
+                    St. Joseph's: {{ c.name }}
+                  </option>
+                </optgroup>
+                
+                <optgroup label="ILA Language Academy" *ngIf="hasCoursesForCategory('language')">
+                  <option *ngFor="let c of getCoursesByCategory('language')" [value]="c.name">
+                    Language Academy: {{ c.name }}
+                  </option>
+                </optgroup>
+                
+                <optgroup label="Xtreem Coaching Center" *ngIf="hasCoursesForCategory('adhunik')">
+                  <option *ngFor="let c of getCoursesByCategory('adhunik')" [value]="c.name">
+                    Xtreem Coaching: {{ c.name }}
+                  </option>
+                </optgroup>
+                
+                <optgroup label="Fastrack Computer Center" *ngIf="hasCoursesForCategory('fastrack')">
+                  <option *ngFor="let c of getCoursesByCategory('fastrack')" [value]="c.name">
+                    Fastrack: {{ c.name }}
+                  </option>
+                </optgroup>
               </select>
               <span class="error-msg" *ngIf="courseField.invalid && courseField.touched">Preferred program selection required</span>
             </div>
@@ -137,9 +160,9 @@ interface InquiryForm {
   styles: [`
     .contact-hero {
       padding: 6rem 0;
-      background: linear-gradient(rgba(7, 15, 25, 0.85), rgba(7, 15, 25, 0.99)), url('https://images.unsplash.com/photo-1534536281715-e28d76689b4d?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
+      background: linear-gradient(rgba(252, 251, 249, 0.75), rgba(252, 251, 249, 0.96)), url('https://images.unsplash.com/photo-1534536281715-e28d76689b4d?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
       background-size: cover;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .contact-hero h1 {
@@ -208,11 +231,12 @@ interface InquiryForm {
     }
 
     .inquiry-form select {
-      background: #0f172a;
+      background: var(--bg-dark);
+      color: var(--text-dark);
     }
 
     .error-msg {
-      color: #ff5274;
+      color: var(--accent);
       font-size: 0.75rem;
       display: block;
       margin-top: 0.25rem;
@@ -244,7 +268,7 @@ interface InquiryForm {
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(4, 9, 16, 0.85);
+      background: rgba(11, 25, 44, 0.75);
       backdrop-filter: blur(8px);
       z-index: 2000;
       display: flex;
@@ -257,8 +281,9 @@ interface InquiryForm {
       width: 100%;
       max-width: 550px;
       padding: 3.5rem 2.5rem;
-      background: #0d1726;
-      border: 1px solid rgba(184, 0, 31, 0.3);
+      background: var(--bg-dark);
+      border: 1px solid rgba(197, 155, 39, 0.35);
+      box-shadow: var(--shadow-glow);
     }
 
     .success-icon {
@@ -283,7 +308,8 @@ interface InquiryForm {
     }
   `]
 })
-export class ContactComponent {
+export class ContactComponent implements OnInit {
+  courses: Course[] = [];
   formData: InquiryForm = {
     name: '',
     email: '',
@@ -292,8 +318,62 @@ export class ContactComponent {
     message: ''
   };
 
+  private defaultCourses: Course[] = [
+    // St. Joseph's College
+    { name: 'Plus Two Commerce', category: 'college', duration: '2 Years' },
+    { name: 'Plus Two Humanities', category: 'college', duration: '2 Years' },
+    { name: 'B.Com Taxation (Coaching)', category: 'college', duration: '3 Years' },
+    { name: 'B.Com Co-operation (Coaching)', category: 'college', duration: '3 Years' },
+    { name: 'B.A. English (Coaching)', category: 'college', duration: '3 Years' },
+    { name: 'M.A. English (Coaching)', category: 'college', duration: '2 Years' },
+    { name: 'M.Com Finance (Coaching)', category: 'college', duration: '2 Years' },
+    // ILA
+    { name: 'German Language Course (A1-A2)', category: 'language', duration: '3-4 Months' },
+    { name: 'German Language Course (B1-B2)', category: 'language', duration: '4-5 Months' },
+    // Xtreem
+    { name: 'Nursing Assistant Course', category: 'adhunik', duration: '6 Months' },
+    // Fastrack
+    { name: 'PGDCA (PG Diploma in Computer Applications)', category: 'fastrack', duration: '1 Year' },
+    { name: 'DCA (Diploma in Computer Applications)', category: 'fastrack', duration: '6 Months' }
+  ];
+
   submitting = false;
   showSuccess = false;
+
+  ngOnInit() {
+    this.fetchCourses();
+  }
+
+  fetchCourses() {
+    const coursesRef = ref(db, 'courses');
+    get(coursesRef)
+      .then((snapshot) => {
+        const fetchedList: Course[] = [];
+        if (snapshot.exists()) {
+          const data = snapshot.val();
+          Object.keys(data).forEach((key) => {
+            fetchedList.push({ id: key, ...data[key] } as Course);
+          });
+        }
+        if (fetchedList.length > 0) {
+          this.courses = fetchedList;
+        } else {
+          this.courses = this.defaultCourses;
+        }
+      })
+      .catch((error) => {
+        console.error('Error fetching courses for contact inquiry dropdown:', error);
+        this.courses = this.defaultCourses;
+      });
+  }
+
+  getCoursesByCategory(category: string): Course[] {
+    return this.courses.filter(c => c.category === category);
+  }
+
+  hasCoursesForCategory(category: string): boolean {
+    return this.courses.some(c => c.category === category);
+  }
 
   submitInquiry(form: any) {
     if (form.invalid) return;
@@ -301,7 +381,7 @@ export class ContactComponent {
     this.submitting = true;
     const leadsRef = ref(db, 'leads');
     const newLeadRef = push(leadsRef);
-    
+
     // Save to Realtime Database
     set(newLeadRef, {
       ...this.formData,
@@ -309,16 +389,16 @@ export class ContactComponent {
       createdDate: new Date().toLocaleDateString(),
       createdAt: { '.sv': 'timestamp' }
     })
-    .then(() => {
-      this.submitting = false;
-      this.showSuccess = true;
-    })
-    .catch((error) => {
-      this.submitting = false;
-      console.error('Error submitting application to Realtime Database:', error);
-      // Even if network fails, show local success for demo integrity
-      this.showSuccess = true;
-    });
+      .then(() => {
+        this.submitting = false;
+        this.showSuccess = true;
+      })
+      .catch((error) => {
+        this.submitting = false;
+        console.error('Error submitting application to Realtime Database:', error);
+        // Even if network fails, show local success for demo integrity
+        this.showSuccess = true;
+      });
   }
 
   closeSuccess() {

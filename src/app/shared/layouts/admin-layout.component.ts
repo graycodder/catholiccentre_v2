@@ -100,8 +100,8 @@ import { signOut } from 'firebase/auth';
     /* Sidebar Styling */
     .admin-sidebar {
       width: 260px;
-      background: #060b12;
-      border-right: 1px solid rgba(255, 255, 255, 0.05);
+      background: #ffffff;
+      border-right: 1px solid rgba(11, 25, 44, 0.08);
       display: flex;
       flex-direction: column;
       position: fixed;
@@ -117,7 +117,7 @@ import { signOut } from 'firebase/auth';
       display: flex;
       align-items: center;
       gap: 0.75rem;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .header-icon {
@@ -127,6 +127,7 @@ import { signOut } from 'firebase/auth';
     .header-info h3 {
       font-size: 1rem;
       letter-spacing: 0.05em;
+      color: #0b192c;
     }
 
     .header-info p {
@@ -157,35 +158,35 @@ import { signOut } from 'firebase/auth';
     }
 
     .menu-item:hover {
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-light);
+      background: rgba(11, 25, 44, 0.04);
+      color: #0b192c;
     }
 
     .menu-item.active {
-      background: rgba(184, 0, 31, 0.1);
-      color: #ff5274;
+      background: rgba(184, 0, 31, 0.06);
+      color: var(--accent);
       border-left: 3px solid var(--accent);
     }
 
     .menu-divider {
       height: 1px;
-      background: rgba(255, 255, 255, 0.05);
+      background: rgba(11, 25, 44, 0.06);
       margin: 1rem 0;
     }
 
     .public-site-btn {
-      border: 1px solid rgba(212, 175, 55, 0.15);
-      color: var(--gold);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      color: var(--gold-hover);
     }
 
     .public-site-btn:hover {
-      background: rgba(212, 175, 55, 0.05) !important;
-      color: var(--gold) !important;
+      background: rgba(212, 175, 55, 0.08) !important;
+      color: var(--gold-hover) !important;
     }
 
     .sidebar-footer {
       padding: 1.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.03);
+      border-top: 1px solid rgba(11, 25, 44, 0.06);
       display: flex;
       flex-direction: column;
       gap: 1rem;
@@ -204,6 +205,7 @@ import { signOut } from 'firebase/auth';
     .email-text {
       text-overflow: ellipsis;
       overflow: hidden;
+      color: var(--text-muted);
     }
 
     .logout-btn {
@@ -211,9 +213,9 @@ import { signOut } from 'firebase/auth';
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      background: rgba(184, 0, 31, 0.1);
-      color: #ff5274;
-      border: 1px solid rgba(184, 0, 31, 0.2);
+      background: rgba(184, 0, 31, 0.06);
+      color: var(--accent);
+      border: 1px solid rgba(184, 0, 31, 0.15);
       padding: 0.6rem 1rem;
       border-radius: 6px;
       cursor: pointer;
@@ -224,7 +226,7 @@ import { signOut } from 'firebase/auth';
 
     .logout-btn:hover {
       background: var(--accent);
-      color: var(--text-light);
+      color: #ffffff;
     }
 
     /* Main Area Styling */
@@ -234,12 +236,13 @@ import { signOut } from 'firebase/auth';
       display: flex;
       flex-direction: column;
       min-width: 0;
+      color: #0b192c;
     }
 
     .admin-header {
       height: 70px;
-      background: #070f19;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      background: #ffffff;
+      border-bottom: 1px solid rgba(11, 25, 44, 0.08);
       padding: 0 2rem;
       display: flex;
       align-items: center;
@@ -251,13 +254,14 @@ import { signOut } from 'firebase/auth';
     .admin-header h2 {
       font-size: 1.25rem;
       font-weight: 600;
+      color: #0b192c;
     }
 
     .sidebar-toggle {
       display: none;
       background: transparent;
       border: none;
-      color: var(--text-light);
+      color: #0b192c;
       cursor: pointer;
       margin-right: 1rem;
     }
@@ -265,7 +269,92 @@ import { signOut } from 'firebase/auth';
     .admin-content-area {
       padding: 2.5rem;
       flex: 1;
-      background-color: #040910;
+      background-color: #faf9f6;
+    }
+
+    /* Admin Light Mode Overrides for Child Pages */
+    .admin-main ::ng-deep {
+      .glass-card {
+        background: #ffffff !important;
+        border: 1px solid rgba(11, 25, 44, 0.08) !important;
+        box-shadow: 0 4px 20px rgba(11, 25, 44, 0.04) !important;
+        color: #0b192c !important;
+      }
+      
+      .glass-card h3, .glass-card h4, .glass-card h2 {
+        color: #0b192c !important;
+      }
+      
+      .glass-card p {
+        color: #5e6d82 !important;
+      }
+
+      .stat-value {
+        color: #0b192c !important;
+      }
+
+      .btn-outline, .view-all-btn {
+        border: 1px solid rgba(11, 25, 44, 0.15) !important;
+        color: #0b192c !important;
+        background: transparent !important;
+      }
+      .btn-outline:hover, .view-all-btn:hover {
+        background: rgba(11, 25, 44, 0.05) !important;
+      }
+
+      .action-btn {
+        background: #f8fafc !important;
+        border: 1px solid rgba(11, 25, 44, 0.06) !important;
+        color: #0b192c !important;
+      }
+      .action-btn:hover {
+        background: #ffffff !important;
+        border-color: var(--gold) !important;
+      }
+      .action-btn p {
+        color: #5e6d82 !important;
+      }
+
+      table {
+        color: #0b192c !important;
+      }
+      th {
+        color: #5e6d82 !important;
+        border-bottom: 1px solid rgba(11, 25, 44, 0.08) !important;
+      }
+      td {
+        border-bottom: 1px solid rgba(11, 25, 44, 0.04) !important;
+        color: #334155 !important;
+      }
+      td strong {
+        color: #0b192c !important;
+      }
+      
+      .form-group label {
+        color: #334155 !important;
+      }
+      .form-control, input, select, textarea {
+        background-color: #ffffff !important;
+        border: 1px solid rgba(11, 25, 44, 0.15) !important;
+        color: #0b192c !important;
+      }
+      .form-control:focus, input:focus, select:focus, textarea:focus {
+        border-color: var(--gold) !important;
+        box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.15) !important;
+      }
+      
+      .panel-empty, .panel-loading {
+        color: #5e6d82 !important;
+      }
+
+      .filter-bar {
+        background: #ffffff !important;
+        border: 1px solid rgba(11, 25, 44, 0.08) !important;
+      }
+
+      .course-title, .course-duration, .member-name, .member-role {
+        color: #000000 !important;
+      }
     }
 
     /* Mobile Overlay & Responsive drawer */

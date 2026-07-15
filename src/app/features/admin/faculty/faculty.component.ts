@@ -107,6 +107,7 @@ interface FacultyMember {
               <!-- Live photo preview -->
               <div class="photo-preview-wrap" *ngIf="photoPreviewUrl">
                 <img [src]="photoPreviewUrl" alt="Preview" class="photo-preview-img"
+                     referrerpolicy="no-referrer"
                      (error)="onPreviewError()">
                 <div class="preview-label">
                   <span class="material-icons-outlined">check_circle</span>
@@ -134,7 +135,17 @@ interface FacultyMember {
 
         <!-- Table List -->
         <div class="glass-card table-card">
-          <h3>Registered Staff Members</h3>
+          <div class="table-header-flex">
+            <h3>Registered Staff Members</h3>
+            
+            <div class="table-filter-wrap">
+              <label for="filterRole" class="filter-label">Filter Designation:</label>
+              <select id="filterRole" [(ngModel)]="selectedFilterRole" class="filter-select">
+                <option value="all">All Designations</option>
+                <option *ngFor="let role of getUniqueRoles()" [value]="role">{{ role }}</option>
+              </select>
+            </div>
+          </div>
 
           <div *ngIf="loading" class="text-center table-loading">
             <span class="material-icons-outlined spin-icon">sync</span>
@@ -146,7 +157,12 @@ interface FacultyMember {
             <p>No faculty profiles stored in database yet. Add one on the left!</p>
           </div>
 
-          <div *ngIf="!loading && faculty.length > 0" class="table-responsive">
+          <div *ngIf="!loading && faculty.length > 0 && getFilteredFaculty().length === 0" class="text-center table-empty">
+            <span class="material-icons-outlined">filter_list_off</span>
+            <p>No staff members found matching the selected designation filter.</p>
+          </div>
+
+          <div *ngIf="!loading && getFilteredFaculty().length > 0" class="table-responsive">
             <table class="admin-faculty-table">
               <thead>
                 <tr>
@@ -157,12 +173,13 @@ interface FacultyMember {
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let member of faculty" [class.editing-row]="editingId === member.id">
+                <tr *ngFor="let member of getFilteredFaculty()" [class.editing-row]="editingId === member.id">
                   <td>
                     <!-- Show photo if available, else initials avatar -->
                     <img *ngIf="member.photoUrl && !imgError[member.id]"
                          [src]="convertGoogleDriveUrl(member.photoUrl)"
                          alt="{{ member.name }}"
+                         referrerpolicy="no-referrer"
                          class="table-photo"
                          (error)="imgError[member.id] = true">
                     <div *ngIf="!member.photoUrl || imgError[member.id]"
@@ -172,10 +189,10 @@ interface FacultyMember {
                     </div>
                   </td>
                   <td>
-                    <strong>{{ member.name }}</strong>
+                    <strong class="member-name">{{ member.name }}</strong>
                     <p class="credentials-tag" *ngIf="member.credentials && member.credentials.trim()">{{ member.credentials }}</p>
                   </td>
-                  <td>{{ member.role }}</td>
+                  <td class="member-role">{{ member.role }}</td>
                   <td>
                     <div class="action-btns">
                       <ng-container *ngIf="deleteConfirmId !== member.id">
@@ -502,6 +519,14 @@ interface FacultyMember {
       vertical-align: middle;
     }
 
+    .member-name {
+      color: #000000;
+    }
+
+    .member-role {
+      color: #000000;
+    }
+
     .editing-row {
       background: rgba(212, 175, 55, 0.04);
       border-left: 3px solid var(--gold);
@@ -593,6 +618,49 @@ interface FacultyMember {
       box-shadow: 0 0 8px rgba(255, 82, 116, 0.3);
     }
 
+    .table-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .table-header-flex h3 {
+      margin-bottom: 0 !important;
+    }
+
+    .table-filter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .filter-select {
+      background: #ffffff;
+      color: #0b192c;
+      border: 1px solid rgba(11, 25, 44, 0.15);
+      border-radius: 6px;
+      padding: 0.4rem 2rem 0.4rem 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .filter-select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+
     @media (max-width: 992px) {
       .faculty-admin-grid { grid-template-columns: 1fr; }
     }
@@ -600,6 +668,7 @@ interface FacultyMember {
 })
 export class FacultyComponent implements OnInit {
   faculty: FacultyMember[] = [];
+  selectedFilterRole = 'all';
   loading = true;
   publishing = false;
   isEditing = false;
@@ -705,7 +774,7 @@ export class FacultyComponent implements OnInit {
     reader.onload = () => {
       this.uploadProgress = 30;
       const base64Data = (reader.result as string).split(',')[1];
-      
+
       const payload = {
         filename: `faculty_${Date.now()}_${file.name}`,
         mimeType: file.type,
@@ -728,7 +797,7 @@ export class FacultyComponent implements OnInit {
       xhr.onload = () => {
         this.isUploading = false;
         this.uploadProgress = null;
-        
+
         try {
           const response = JSON.parse(xhr.responseText);
           if (response.status === 'success') {
@@ -767,6 +836,23 @@ export class FacultyComponent implements OnInit {
     if (parts.length >= 2) return (parts[0][0] + parts[1][0]).toUpperCase();
     if (parts.length === 1) return parts[0].substring(0, 2).toUpperCase();
     return name.substring(0, 2).toUpperCase();
+  }
+
+  getUniqueRoles(): string[] {
+    const rolesSet = new Set<string>();
+    this.faculty.forEach(f => {
+      if (f.role && f.role.trim()) {
+        rolesSet.add(f.role.trim());
+      }
+    });
+    return Array.from(rolesSet).sort();
+  }
+
+  getFilteredFaculty(): FacultyMember[] {
+    if (this.selectedFilterRole === 'all') {
+      return this.faculty;
+    }
+    return this.faculty.filter(member => member.role && member.role.trim() === this.selectedFilterRole);
   }
 
   loadFaculty() {

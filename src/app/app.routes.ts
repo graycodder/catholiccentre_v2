@@ -34,6 +34,10 @@ export const routes: Routes = [
         loadComponent: () => import('./features/website/fastrack/fastrack.component').then(m => m.FastrackComponent)
       },
       {
+        path: 'ila',
+        loadComponent: () => import('./features/website/ila/ila.component').then(m => m.IlaComponent)
+      },
+      {
         path: 'contact',
         loadComponent: () => import('./features/website/contact/contact.component').then(m => m.ContactComponent)
       }

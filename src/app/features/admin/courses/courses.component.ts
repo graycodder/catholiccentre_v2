@@ -12,6 +12,7 @@ interface Course {
   description: string;
   eligibility: string;
   highlights: string[];
+  imageUrl?: string;
 }
 
 @Component({
@@ -39,9 +40,9 @@ interface Course {
                 <label class="form-label" for="category">Academy Division *</label>
                 <select id="category" name="category" [(ngModel)]="formData.category" required class="form-control">
                   <option value="college">St. Joseph's College</option>
-                  <option value="language">Language Academy (German)</option>
+                  <option value="fastrack">Fastrack Computer Center</option>
                   <option value="adhunik">Xtreem Coaching Center</option>
-                  <option value="fastrack">Fastrack IT Academy</option>
+                  <option value="language">ILA</option>
                 </select>
               </div>
 
@@ -66,7 +67,69 @@ interface Course {
               <input type="text" id="highlightsInput" name="highlightsInput" [(ngModel)]="highlightsInput" class="form-control" placeholder="Separate items with commas (e.g. Govt. Certified, Placement support)">
             </div>
 
-            <button type="submit" [disabled]="courseForm.invalid || publishing" class="btn-gold publish-btn">
+            <!-- Course Image Upload & URL options -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined label-icon">add_photo_alternate</span>
+                Course Image / Brochure Image
+              </label>
+
+              <!-- Option 1: File selector from computer -->
+              <div class="file-upload-container">
+                <label class="file-upload-label" for="photoFile">
+                  <span class="material-icons-outlined">cloud_upload</span>
+                  <span>{{ isUploading ? 'Uploading...' : 'Choose image from computer' }}</span>
+                  <input type="file" id="photoFile" accept="image/*" (change)="onFileSelected($event)" class="file-input" [disabled]="isUploading">
+                </label>
+                
+                <!-- Upload Progress Bar -->
+                <div class="progress-bar-container" *ngIf="isUploading && uploadProgress !== null">
+                  <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+                  <span class="progress-text">{{ uploadProgress }}% uploaded</span>
+                </div>
+              </div>
+
+              <div class="or-separator">
+                <span>OR</span>
+              </div>
+
+              <!-- Option 2: Paste manual link -->
+              <div class="manual-url-container">
+                <input type="url" id="imageUrl" name="imageUrl" [(ngModel)]="formData.imageUrl"
+                       class="form-control"
+                       placeholder="Paste Google Drive share link here..."
+                       (ngModelChange)="onPhotoUrlChange($event)">
+                <span class="hint-msg">
+                  If using Google Drive: Share the file → Copy link → Paste above. We'll convert it automatically.
+                </span>
+
+                <div class="drive-folder-link-wrap">
+                  <a href="https://drive.google.com/drive/folders/1IJJS_1bU2FrkCbEmIggNcFmRWsFmzdfP?usp=sharing" 
+                     target="_blank" 
+                     class="btn-drive-link">
+                    <span class="material-icons-outlined">folder_shared</span>
+                    Open Google Drive Storage Folder
+                  </a>
+                </div>
+              </div>
+
+              <!-- Live photo preview -->
+              <div class="photo-preview-wrap" *ngIf="photoPreviewUrl">
+                <img [src]="photoPreviewUrl" alt="Preview" class="photo-preview-img"
+                     referrerpolicy="no-referrer"
+                     (error)="onPreviewError()">
+                <div class="preview-label">
+                  <span class="material-icons-outlined">check_circle</span>
+                  Image preview active
+                </div>
+              </div>
+              <div class="photo-preview-error" *ngIf="photoUrlError">
+                <span class="material-icons-outlined">error_outline</span>
+                Could not load preview. Make sure the file is shared publicly ("Anyone with the link").
+              </div>
+            </div>
+
+            <button type="submit" [disabled]="courseForm.invalid || publishing || isUploading" class="btn-gold publish-btn">
               <span class="material-icons-outlined spin-icon" *ngIf="publishing">sync</span>
               <span>{{ publishing ? (isEditing ? 'Saving...' : 'Publishing...') : (isEditing ? 'Update Course Offering' : 'Add Course Offering') }}</span>
             </button>
@@ -78,7 +141,20 @@ interface Course {
 
         <!-- Course Table List -->
         <div class="glass-card table-card">
-          <h3>Published Offerings</h3>
+          <div class="table-header-flex">
+            <h3>Published Offerings</h3>
+            
+            <div class="table-filter-wrap">
+              <label for="filterCategory" class="filter-label">Filter Category:</label>
+              <select id="filterCategory" [(ngModel)]="selectedFilterCategory" class="filter-select">
+                <option value="all">All Divisions</option>
+                <option value="college">St. Joseph's College</option>
+                <option value="fastrack">Fastrack Computer Center</option>
+                <option value="adhunik">Xtreem Coaching Center</option>
+                <option value="language">ILA</option>
+              </select>
+            </div>
+          </div>
           
           <div *ngIf="loading" class="text-center table-loading">
             <span class="material-icons-outlined spin-icon">sync</span>
@@ -90,10 +166,16 @@ interface Course {
             <p>No courses published in database yet. Add one on the left!</p>
           </div>
 
-          <div *ngIf="!loading && courses.length > 0" class="table-responsive">
+          <div *ngIf="!loading && courses.length > 0 && getFilteredCourses().length === 0" class="text-center table-empty">
+            <span class="material-icons-outlined">filter_list_off</span>
+            <p>No courses found matching the selected category filter.</p>
+          </div>
+
+          <div *ngIf="!loading && getFilteredCourses().length > 0" class="table-responsive">
             <table class="admin-courses-table">
               <thead>
                 <tr>
+                  <th>Image</th>
                   <th>Title</th>
                   <th>Category</th>
                   <th>Duration</th>
@@ -101,17 +183,26 @@ interface Course {
                 </tr>
               </thead>
               <tbody>
-                <tr *ngFor="let course of courses">
+                <tr *ngFor="let course of getFilteredCourses()">
                   <td>
-                    <strong>{{ course.name }}</strong>
+                    <div class="table-image-container">
+                      <img *ngIf="course.imageUrl" [src]="convertGoogleDriveUrl(course.imageUrl)" 
+                           alt="{{ course.name }}" class="table-thumb" referrerpolicy="no-referrer">
+                      <div *ngIf="!course.imageUrl" class="table-thumb-fallback">
+                        <span class="material-icons-outlined">image</span>
+                      </div>
+                    </div>
+                  </td>
+                  <td>
+                    <strong class="course-title">{{ course.name }}</strong>
                     <p class="desc-preview">{{ getExcerpt(course.description) }}</p>
                   </td>
                   <td>
                     <span class="badge" [class.badge-burgundy]="course.category==='college'||course.category==='adhunik'" [class.badge-gold]="course.category==='language'||course.category==='fastrack'">
-                      {{ course.category }}
+                      {{ getCategoryLabel(course.category) }}
                     </span>
                   </td>
-                  <td>{{ course.duration }}</td>
+                  <td class="course-duration">{{ course.duration }}</td>
                   <td>
                     <div class="actions-flex">
                       <ng-container *ngIf="deleteConfirmId !== course.id">
@@ -175,7 +266,7 @@ interface Course {
     }
 
     .admin-form select {
-      background: #0f172a;
+      background: #ffffff;
     }
 
     .publish-btn {
@@ -235,6 +326,14 @@ interface Course {
       font-size: 0.875rem;
     }
 
+    .course-title {
+      color: #000000;
+    }
+
+    .course-duration {
+      color: #000000;
+    }
+
     .desc-preview {
       font-size: 0.75rem;
       color: var(--text-muted);
@@ -289,6 +388,241 @@ interface Course {
       box-shadow: 0 0 8px rgba(255, 82, 116, 0.3);
     }
 
+    /* File upload styles */
+    .file-upload-container {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(255, 255, 255, 0.15);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: var(--transition-smooth);
+    }
+
+    .file-upload-container:hover {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.02);
+    }
+
+    .file-upload-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: var(--transition-smooth);
+    }
+
+    .file-upload-label:hover {
+      color: var(--text-light);
+    }
+
+    .file-upload-label span.material-icons-outlined {
+      font-size: 2rem;
+      color: var(--gold);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .progress-bar-container {
+      margin-top: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      height: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, var(--gold) 0%, #ffdf7a 100%);
+      height: 100%;
+      width: 0;
+      transition: width 0.2s ease;
+      border-radius: 4px;
+    }
+
+    .progress-text {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--gold);
+      margin-top: 0.35rem;
+      font-weight: 600;
+    }
+
+    .or-separator {
+      text-align: center;
+      margin: 1.25rem 0;
+      position: relative;
+    }
+
+    .or-separator::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      z-index: 1;
+    }
+
+    .or-separator span {
+      background: #0f172a; /* matches glass card background */
+      padding: 0 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-drive-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gold);
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px dashed rgba(212, 175, 55, 0.3);
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-drive-link:hover {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold);
+      box-shadow: 0 2px 10px rgba(212, 175, 55, 0.1);
+    }
+
+    .btn-drive-link span {
+      font-size: 1.1rem;
+    }
+
+    /* Photo preview */
+    .photo-preview-wrap {
+      margin-top: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .photo-preview-img {
+      width: 120px;
+      height: 72px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+    }
+
+    .preview-label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: #34d399;
+    }
+
+    .preview-label span {
+      font-size: 1rem;
+      color: #34d399;
+    }
+
+    .photo-preview-error {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      color: #ff5274;
+      font-size: 0.78rem;
+      line-height: 1.4;
+    }
+
+    .photo-preview-error span {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Table Thumbnail Styles */
+    .table-image-container {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .table-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .table-thumb-fallback {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .table-thumb-fallback span {
+      font-size: 1.25rem;
+    }
+
+    .table-header-flex {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .table-header-flex h3 {
+      margin-bottom: 0 !important;
+    }
+
+    .table-filter-wrap {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .filter-label {
+      font-size: 0.85rem;
+      color: var(--text-muted);
+      font-weight: 500;
+    }
+
+    .filter-select {
+      background: #ffffff;
+      color: #0b192c;
+      border: 1px solid rgba(11, 25, 44, 0.15);
+      border-radius: 6px;
+      padding: 0.4rem 2rem 0.4rem 0.75rem;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      outline: none;
+      transition: var(--transition-smooth);
+    }
+
+    .filter-select:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    }
+
     @media (max-width: 992px) {
       .courses-admin-grid { grid-template-columns: 1fr; }
       .inline-fields { grid-template-columns: 1fr; gap: 0; }
@@ -297,24 +631,32 @@ interface Course {
 })
 export class CoursesComponent implements OnInit {
   courses: Course[] = [];
+  selectedFilterCategory = 'all';
   loading = true;
   publishing = false;
   isEditing = false;
   editingCourseId: string | null = null;
   deleteConfirmId = '';
+  photoPreviewUrl = '';
+  photoUrlError = false;
+  uploadProgress: number | null = null;
+  isUploading = false;
+  appsScriptUrl = '';
 
   formData = {
     name: '',
     category: 'college' as 'college' | 'language' | 'adhunik' | 'fastrack',
     duration: '',
     description: '',
-    eligibility: ''
+    eligibility: '',
+    imageUrl: ''
   };
 
   highlightsInput = '';
 
   ngOnInit() {
     this.loadCourses();
+    this.loadConfig();
   }
 
   loadCourses() {
@@ -345,9 +687,12 @@ export class CoursesComponent implements OnInit {
       category: course.category,
       duration: course.duration,
       description: course.description || '',
-      eligibility: course.eligibility
+      eligibility: course.eligibility,
+      imageUrl: course.imageUrl || ''
     };
     this.highlightsInput = course.highlights ? course.highlights.join(', ') : '';
+    this.photoPreviewUrl = course.imageUrl ? this.convertGoogleDriveUrl(course.imageUrl) : '';
+    this.photoUrlError = false;
     
     // Scroll form into view for better user experience
     const formElement = document.querySelector('.form-card');
@@ -359,10 +704,13 @@ export class CoursesComponent implements OnInit {
   cancelEdit(form: any) {
     this.isEditing = false;
     this.editingCourseId = null;
+    this.photoPreviewUrl = '';
+    this.photoUrlError = false;
     form.resetForm({
       category: 'college'
     });
     this.highlightsInput = '';
+    this.formData.imageUrl = '';
   }
 
   handlePublish(form: any) {
@@ -384,6 +732,8 @@ export class CoursesComponent implements OnInit {
           this.publishing = false;
           this.isEditing = false;
           this.editingCourseId = null;
+          this.photoPreviewUrl = '';
+          this.photoUrlError = false;
           form.resetForm({
             category: 'college'
           });
@@ -404,6 +754,8 @@ export class CoursesComponent implements OnInit {
       })
         .then(() => {
           this.publishing = false;
+          this.photoPreviewUrl = '';
+          this.photoUrlError = false;
           form.resetForm({
             category: 'college'
           });
@@ -415,6 +767,139 @@ export class CoursesComponent implements OnInit {
           console.error('Error adding course doc to Realtime Database:', error);
         });
     }
+  }
+
+  loadConfig() {
+    get(ref(db, 'settings/appsScriptUrl'))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.appsScriptUrl = snapshot.val();
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load appsScriptUrl:', err);
+      });
+  }
+
+  convertGoogleDriveUrl(url: string): string {
+    if (!url || !url.trim()) return '';
+    url = url.trim();
+
+    const ensureSize = (lh3Url: string): string => {
+      if (/=[swh]\d/.test(lh3Url) || lh3Url.endsWith('=s0')) return lh3Url;
+      return lh3Url + '=s0';
+    };
+
+    if (url.includes('lh3.googleusercontent.com')) return ensureSize(url);
+
+    const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch) {
+      return `https://lh3.googleusercontent.com/d/${fileMatch[1]}=s0`;
+    }
+
+    const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idMatch) {
+      return `https://lh3.googleusercontent.com/d/${idMatch[1]}=s0`;
+    }
+
+    return url;
+  }
+
+  onPhotoUrlChange(value: string) {
+    this.photoUrlError = false;
+    this.photoPreviewUrl = '';
+    if (value && value.trim()) {
+      this.photoPreviewUrl = this.convertGoogleDriveUrl(value.trim());
+    }
+  }
+
+  onPreviewError() {
+    this.photoPreviewUrl = '';
+    this.photoUrlError = true;
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!this.appsScriptUrl) {
+      alert('Please configure your Google Apps Script Web App URL first in the Google Drive Upload Configuration section under the Leadership Board page.');
+      return;
+    }
+
+    if (file.size > 15 * 1024 * 1024) {
+      alert('Photo must be smaller than 15MB');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert('File must be an image');
+      return;
+    }
+
+    this.isUploading = true;
+    this.uploadProgress = 10;
+    this.photoUrlError = false;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      this.uploadProgress = 30;
+      const base64Data = (reader.result as string).split(',')[1];
+      
+      const payload = {
+        filename: `course_${Date.now()}_${file.name}`,
+        mimeType: file.type,
+        base64: base64Data
+      };
+
+      this.uploadProgress = 50;
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', this.appsScriptUrl, true);
+      xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const percent = 50 + Math.round((e.loaded / e.total) * 45);
+          this.uploadProgress = percent;
+        }
+      };
+
+      xhr.onload = () => {
+        this.isUploading = false;
+        this.uploadProgress = null;
+        
+        try {
+          const response = JSON.parse(xhr.responseText);
+          if (response.status === 'success') {
+            this.formData.imageUrl = response.url;
+            this.photoPreviewUrl = this.convertGoogleDriveUrl(response.url);
+          } else {
+            alert('Upload failed: ' + (response.message || 'Unknown error'));
+          }
+        } catch (err) {
+          console.error('Error parsing response:', err, xhr.responseText);
+          alert('Upload request sent. If the photo does not preview, please verify your Apps Script URL and Google Drive folder permissions.');
+        }
+      };
+
+      xhr.onerror = (err) => {
+        console.error('XHR Upload error:', err);
+        this.isUploading = false;
+        this.uploadProgress = null;
+        alert('Failed to connect to Apps Script. Please verify the URL and your internet connection.');
+      };
+
+      xhr.send(JSON.stringify(payload));
+    };
+
+    reader.onerror = (err) => {
+      console.error('File reading error:', err);
+      this.isUploading = false;
+      this.uploadProgress = null;
+      alert('Failed to read the file.');
+    };
   }
 
   confirmDelete(id: string) {
@@ -448,5 +933,22 @@ export class CoursesComponent implements OnInit {
     if (!text) return '';
     if (text.length > 80) return text.substring(0, 80) + '...';
     return text;
+  }
+
+  getCategoryLabel(cat: string): string {
+    switch (cat) {
+      case 'college': return "St. Joseph's College";
+      case 'language': return 'ILA';
+      case 'adhunik': return 'Xtreem Coaching Center';
+      case 'fastrack': return 'Fastrack Computer Center';
+      default: return cat;
+    }
+  }
+
+  getFilteredCourses(): Course[] {
+    if (this.selectedFilterCategory === 'all') {
+      return this.courses;
+    }
+    return this.courses.filter(course => course.category === this.selectedFilterCategory);
   }
 }

@@ -110,6 +110,7 @@ interface Leader {
               <!-- Live photo preview -->
               <div class="photo-preview-wrap" *ngIf="photoPreviewUrl">
                 <img [src]="photoPreviewUrl" alt="Preview" class="photo-preview-img"
+                     referrerpolicy="no-referrer"
                      (error)="onPreviewError()">
                 <div class="preview-label">
                   <span class="material-icons-outlined">check_circle</span>
@@ -184,6 +185,7 @@ interface Leader {
                     <img *ngIf="leader.photoUrl && !imgError[leader.id]"
                          [src]="convertGoogleDriveUrl(leader.photoUrl)"
                          alt="{{ leader.name }}"
+                         referrerpolicy="no-referrer"
                          class="table-photo"
                          (error)="imgError[leader.id] = true">
                     <div *ngIf="!leader.photoUrl || imgError[leader.id]"
@@ -194,10 +196,10 @@ interface Leader {
                     </div>
                   </td>
                   <td>
-                    <strong>{{ leader.name }}</strong>
+                    <strong class="member-name">{{ leader.name }}</strong>
                     <p class="credentials-tag">{{ leader.credentials }}</p>
                   </td>
-                  <td>{{ leader.role }}</td>
+                  <td class="member-role">{{ leader.role }}</td>
                   <td>
                     <div class="action-btns">
                       <ng-container *ngIf="deleteConfirmId !== leader.id">
@@ -596,6 +598,14 @@ interface Leader {
       border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       font-size: 0.875rem;
       vertical-align: middle;
+    }
+
+    .member-name {
+      color: #000000;
+    }
+
+    .member-role {
+      color: #000000;
     }
 
     .editing-row {

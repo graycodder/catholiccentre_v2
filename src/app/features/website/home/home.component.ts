@@ -11,7 +11,7 @@ import { CommonModule } from '@angular/common';
     <section class="hero-section">
       <div class="hero-overlay"></div>
       <div class="container hero-content animate-fade-in">
-        <span class="badge badge-gold hero-badge">Admissions Open 2026-27</span>
+        <span class="badge badge-gold hero-badge">Admissions Open</span>
         <h1 class="serif-text hero-title">St. Joseph's College</h1>
         <p class="hero-subtitle">
           Welcome to St. Joseph's College Thoppumpady! We provide exceptional coaching for Higher Secondary education and degree programs from Mahatma Gandhi University. With our passionate faculty and vibrant campus, you'll thrive and achieve your dreams.
@@ -90,7 +90,7 @@ import { CommonModule } from '@angular/common';
         <div class="patron-image-container">
           <div class="patron-frame">
             <div class="patron-placeholder">
-              <span class="material-icons-outlined">church</span>
+              <img src="logo.png" alt="Catholic Centre Logo" class="patron-logo">
               <h4>Catholic Centre</h4>
               <p>Thoppumpady, Cochin</p>
             </div>
@@ -167,7 +167,7 @@ import { CommonModule } from '@angular/common';
       min-height: 550px;
       display: flex;
       align-items: center;
-      background: linear-gradient(rgba(11, 25, 44, 0.6), rgba(7, 15, 25, 0.95)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
+      background: linear-gradient(rgba(252, 251, 249, 0.7), rgba(252, 251, 249, 0.95)), url('https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
       background-size: cover;
     }
 
@@ -197,6 +197,7 @@ import { CommonModule } from '@angular/common';
       line-height: 1.1;
       margin-bottom: 1.5rem;
       letter-spacing: -0.03em;
+      color: var(--text-dark);
     }
 
     .hero-subtitle {
@@ -278,7 +279,7 @@ import { CommonModule } from '@angular/common';
     }
 
     .card-link {
-      color: var(--text-light);
+      color: var(--text-dark);
       text-decoration: none;
       font-size: 0.85rem;
       font-weight: 600;
@@ -319,7 +320,7 @@ import { CommonModule } from '@angular/common';
     }
 
     .patron-placeholder {
-      background: linear-gradient(135deg, #0e1d35 0%, #060b13 100%);
+      background: linear-gradient(135deg, #ffffff 0%, #f4eedd 100%);
       border-radius: 16px;
       width: 100%;
       height: 100%;
@@ -329,16 +330,18 @@ import { CommonModule } from '@angular/common';
       justify-content: center;
       color: var(--text-muted);
       gap: 1rem;
-      border: 1px solid rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(197, 155, 39, 0.15);
     }
 
-    .patron-placeholder span {
-      font-size: 4rem;
-      color: var(--gold);
+    .patron-logo {
+      height: 90px;
+      width: auto;
+      object-fit: contain;
+      filter: drop-shadow(0 4px 6px rgba(0, 0, 0, 0.05));
     }
 
     .patron-placeholder h4 {
-      color: var(--text-light);
+      color: var(--text-dark);
       font-size: 1.5rem;
     }
 
@@ -372,7 +375,7 @@ import { CommonModule } from '@angular/common';
       display: flex;
       gap: 2rem;
       margin-bottom: 2.5rem;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(11, 25, 44, 0.08);
       padding-top: 1.5rem;
     }
 
@@ -426,23 +429,23 @@ import { CommonModule } from '@angular/common';
       height: 100%;
       border-radius: 16px;
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(11, 25, 44, 0.08);
     }
 
     /* Video Section styling */
     .video-section {
-      background: linear-gradient(180deg, var(--bg-dark) 0%, #080f1b 100%);
+      background: linear-gradient(180deg, var(--bg-dark) 0%, #f4f3ef 100%);
     }
 
     .video-container {
       max-width: 900px;
       margin: 0 auto;
       padding: 0.5rem;
-      border: 1px solid rgba(212, 175, 55, 0.2);
+      border: 1px solid rgba(197, 155, 39, 0.25);
       box-shadow: var(--shadow-glow);
       border-radius: 20px;
       overflow: hidden;
-      background: rgba(13, 23, 38, 0.6);
+      background: rgba(255, 255, 255, 0.8);
       backdrop-filter: blur(12px);
     }
 
@@ -450,8 +453,8 @@ import { CommonModule } from '@angular/common';
       display: block;
       width: 100%;
       border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.05);
+      box-shadow: 0 10px 30px rgba(11, 25, 44, 0.08);
+      border: 1px solid rgba(11, 25, 44, 0.08);
       outline: none;
     }
 
@@ -459,9 +462,9 @@ import { CommonModule } from '@angular/common';
     .cta-banner {
       position: relative;
       padding: 7rem 0;
-      background: linear-gradient(rgba(184, 0, 31, 0.4), rgba(7, 15, 25, 0.95)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
+      background: linear-gradient(rgba(152, 0, 26, 0.85), rgba(11, 25, 44, 0.92)), url('https://images.unsplash.com/photo-1523050854058-8df90110c9f1?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
       background-size: cover;
-      border-top: 1px solid rgba(212, 175, 55, 0.2);
+      border-top: 1px solid rgba(197, 155, 39, 0.2);
     }
 
     .cta-overlay {
@@ -470,7 +473,45 @@ import { CommonModule } from '@angular/common';
       left: 0;
       width: 100%;
       height: 100%;
-      background: radial-gradient(circle, transparent 20%, var(--bg-dark) 90%);
+      background: radial-gradient(circle, transparent 20%, var(--bg-dark) 95%);
+      pointer-events: none;
+    }
+
+    .cta-content {
+      position: relative;
+      z-index: 10;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    .cta-content h2 {
+      font-size: 3rem;
+      margin-bottom: 1.5rem;
+      color: var(--text-on-dark);
+    }
+
+    .cta-content p {
+      font-size: 1.15rem;
+      margin-bottom: 2.5rem;
+      color: var(--text-on-dark);
+      opacity: 0.9;
+    }
+
+    .btn-large {
+      padding: 1rem 2.5rem !important;
+      font-size: 1.05rem !important;
+    }
+
+    @media (max-width: 992px) {
+      .hero-title { font-size: 3rem; }
+      .patron-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .location-grid { grid-template-columns: 1fr; gap: 2rem; }
+      .cta-content h2 { font-size: 2.25rem; }
+    }
+
+    @media (max-width: 576px) {
+      .hero-title { font-size: 2.5rem; }
+      .hero-actions { flex-direction: column; }
     }
 
     .cta-content {

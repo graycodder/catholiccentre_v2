@@ -148,28 +148,29 @@ interface Lead {
       align-items: center;
       gap: 0.75rem;
       flex: 1;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px solid rgba(255, 255, 255, 0.08);
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(11, 25, 44, 0.15);
       border-radius: 8px;
       padding: 0.6rem 1rem;
+      color: var(--text-muted);
     }
-
+ 
     .search-box input {
       background: transparent;
       border: none;
-      color: var(--text-light);
+      color: var(--text-dark);
       width: 100%;
       font-size: 0.95rem;
     }
-
+ 
     .search-box input:focus {
       outline: none;
     }
-
+ 
     .filter-select {
-      background: #0f172a;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      color: var(--text-light);
+      background: #ffffff;
+      border: 1px solid rgba(11, 25, 44, 0.15);
+      color: var(--text-dark);
       padding: 0.6rem 1.25rem;
       border-radius: 8px;
       font-size: 0.9rem;
@@ -325,8 +326,8 @@ interface Lead {
 
     /* Details Row */
     .details-row td {
-      background: rgba(0, 0, 0, 0.2);
-      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      background: rgba(11, 25, 44, 0.03);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.05);
     }
 
     .expanded-details {
@@ -335,13 +336,13 @@ interface Lead {
     }
 
     .expanded-details strong {
-      color: var(--gold);
+      color: var(--accent);
       display: block;
       margin-bottom: 0.5rem;
     }
 
     .expanded-details p {
-      color: #e2e8f0;
+      color: var(--text-dark);
       margin: 0;
       line-height: 1.6;
     }

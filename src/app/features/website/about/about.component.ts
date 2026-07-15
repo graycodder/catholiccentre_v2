@@ -140,6 +140,7 @@ interface TeacherMember {
             <img *ngIf="leader.photoUrl"
                  [src]="fixDriveUrl(leader.photoUrl)"
                  [alt]="leader.name"
+                 referrerpolicy="no-referrer"
                  class="leader-photo">
             <div *ngIf="!leader.photoUrl"
                  class="avatar-initials"
@@ -181,6 +182,7 @@ interface TeacherMember {
             <img *ngIf="member.photoUrl"
                  [src]="fixDriveUrl(member.photoUrl)"
                  [alt]="member.name"
+                 referrerpolicy="no-referrer"
                  class="teacher-photo">
             <div *ngIf="!member.photoUrl"
                  class="teacher-avatar"
@@ -223,6 +225,7 @@ interface TeacherMember {
             <img *ngIf="member.photoUrl"
                  [src]="fixDriveUrl(member.photoUrl)"
                  [alt]="member.name"
+                 referrerpolicy="no-referrer"
                  class="staff-photo">
             <div *ngIf="!member.photoUrl"
                  class="staff-avatar"
@@ -243,9 +246,9 @@ interface TeacherMember {
   styles: [`
     .about-hero {
       padding: 6rem 0;
-      background: linear-gradient(rgba(7, 15, 25, 0.8), rgba(7, 15, 25, 0.98)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
+      background: linear-gradient(rgba(252, 251, 249, 0.75), rgba(252, 251, 249, 0.96)), url('https://images.unsplash.com/photo-1524995997946-a1c2e315a42f?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
       background-size: cover;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .about-hero h1 {
@@ -301,7 +304,7 @@ interface TeacherMember {
     }
 
     .styled-list strong {
-      color: var(--text-light);
+      color: var(--text-dark);
       display: block;
       margin-bottom: 0.25rem;
     }
@@ -312,7 +315,9 @@ interface TeacherMember {
     }
 
     .history-blocks {
-      background: #040910;
+      background: #f4f3ef;
+      border-top: 1px solid rgba(11, 25, 44, 0.06);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .history-grid {
@@ -335,7 +340,7 @@ interface TeacherMember {
     }
 
     .font-burgundy {
-      color: #ff5274;
+      color: var(--accent);
       font-size: 1.75rem;
       margin-top: 0.5rem;
     }
@@ -398,7 +403,7 @@ interface TeacherMember {
 
     .leader-card:hover .leader-photo {
       transform: scale(1.05);
-      border-color: var(--text-light);
+      border-color: var(--gold);
       box-shadow: 0 10px 30px rgba(212, 175, 55, 0.5);
     }
 
@@ -457,7 +462,9 @@ interface TeacherMember {
 
     /* ── Teachers Section ── */
     .teachers-section {
-      background: #040910;
+      background: #f4f3ef;
+      border-top: 1px solid rgba(11, 25, 44, 0.06);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .teachers-empty {
@@ -509,7 +516,7 @@ interface TeacherMember {
 
     .teacher-card:hover .teacher-photo {
       transform: scale(1.05);
-      border-color: var(--text-light);
+      border-color: var(--gold);
     }
 
     .teacher-avatar {
@@ -554,7 +561,7 @@ interface TeacherMember {
       font-size: 0.82rem;
       color: var(--gold);
       font-weight: 600;
-      margin-bottom: 0.2rem;
+      margin-bottom: 0.25rem;
       text-transform: uppercase;
       letter-spacing: 0.04em;
     }
@@ -575,7 +582,7 @@ interface TeacherMember {
 
     /* ── Staff & Faculty Section ── */
     .staff-section {
-      background: #070f19;
+      background: var(--bg-dark);
     }
 
     .staff-empty, .leaders-empty {
@@ -628,7 +635,7 @@ interface TeacherMember {
 
     .staff-card:hover .staff-photo {
       transform: scale(1.08);
-      border-color: var(--text-light);
+      border-color: var(--gold);
     }
 
     .staff-avatar {

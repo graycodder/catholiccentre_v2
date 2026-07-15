@@ -11,6 +11,7 @@ interface BlogPost {
   tag: string;
   date: string;
   author?: string;
+  imageUrl?: string;
 }
 
 @Component({
@@ -34,19 +35,28 @@ interface BlogPost {
           <p>Fetching latest updates...</p>
         </div>
 
-        <div *ngIf="!loading" class="grid-cols-3 blogs-grid">
+        <div *ngIf="!loading" class="grid-cols-2 blogs-grid">
           <div *ngFor="let post of posts" class="glass-card blog-card">
-            <div class="card-meta">
-              <span class="badge badge-gold">{{ post.tag }}</span>
-              <span class="blog-date">{{ post.date }}</span>
+            <div class="blog-card-image">
+              <img *ngIf="post.imageUrl" [src]="convertGoogleDriveUrl(post.imageUrl)" alt="{{ post.title }}" referrerpolicy="no-referrer">
+              <div *ngIf="!post.imageUrl" class="blog-card-fallback-image">
+                <span class="material-icons-outlined">campaign</span>
+              </div>
             </div>
             
-            <h3 class="blog-title">{{ post.title }}</h3>
-            <p class="blog-excerpt">{{ post.summary || getExcerpt(post.content) }}</p>
-            
-            <div class="blog-footer">
-              <span class="author" *ngIf="post.author">By {{ post.author }}</span>
-              <button (click)="openPost(post)" class="btn-outline read-btn">Read Full Article</button>
+            <div class="blog-card-content">
+              <div class="card-meta">
+                <span class="badge badge-gold">{{ post.tag }}</span>
+                <span class="blog-date">{{ post.date }}</span>
+              </div>
+              
+              <h3 class="blog-title">{{ post.title }}</h3>
+              <p class="blog-excerpt">{{ post.summary || getExcerpt(post.content) }}</p>
+              
+              <div class="blog-footer">
+                <span class="author" *ngIf="post.author">By {{ post.author }}</span>
+                <button (click)="openPost(post)" class="btn-outline read-btn">Read Full Article</button>
+              </div>
             </div>
           </div>
         </div>
@@ -61,16 +71,23 @@ interface BlogPost {
 
     <!-- Modal for reading full post -->
     <div class="modal-overlay" *ngIf="selectedPost" (click)="closePost()">
-      <div class="modal-content glass-card gold-card" (click)="$event.stopPropagation()">
+      <div class="modal-content" (click)="$event.stopPropagation()">
         <button class="modal-close" (click)="closePost()">&times;</button>
-        <div class="modal-meta">
-          <span class="badge badge-gold">{{ selectedPost.tag }}</span>
-          <span>{{ selectedPost.date }}</span>
-          <span *ngIf="selectedPost.author" class="modal-author"> | By {{ selectedPost.author }}</span>
-        </div>
-        <h2 class="serif-text modal-title">{{ selectedPost.title }}</h2>
-        <div class="modal-body">
-          <p class="formatted-content">{{ selectedPost.content }}</p>
+        
+        <div class="modal-inner-container">
+          <div class="modal-image-wrap" *ngIf="selectedPost.imageUrl">
+            <img [src]="convertGoogleDriveUrl(selectedPost.imageUrl)" alt="{{ selectedPost.title }}" referrerpolicy="no-referrer">
+          </div>
+          
+          <div class="modal-meta">
+            <span class="badge badge-gold">{{ selectedPost.tag }}</span>
+            <span>{{ selectedPost.date }}</span>
+            <span *ngIf="selectedPost.author" class="modal-author"> | By {{ selectedPost.author }}</span>
+          </div>
+          <h2 class="serif-text modal-title">{{ selectedPost.title }}</h2>
+          <div class="modal-body">
+            <p class="formatted-content">{{ selectedPost.content }}</p>
+          </div>
         </div>
       </div>
     </div>
@@ -78,9 +95,9 @@ interface BlogPost {
   styles: [`
     .blog-hero {
       padding: 6rem 0;
-      background: linear-gradient(rgba(7, 15, 25, 0.85), rgba(7, 15, 25, 0.99)), url('https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?q=80&w=1374&auto=format&fit=crop') no-repeat center center;
+      background: linear-gradient(rgba(252, 251, 249, 0.75), rgba(252, 251, 249, 0.96)), url('https://images.unsplash.com/photo-1506880018603-83d5b814b5a6?q=80&w=1374&auto=format&fit=crop') no-repeat center center;
       background-size: cover;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
     .blog-hero h1 {
@@ -113,6 +130,49 @@ interface BlogPost {
       display: flex;
       flex-direction: column;
       height: 100%;
+      padding: 0 !important;
+      overflow: hidden;
+    }
+
+    .blog-card-image {
+      width: 100%;
+      height: 200px;
+      overflow: hidden;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(184, 0, 31, 0.05) 100%);
+      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+
+    .blog-card-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.5s ease;
+    }
+
+    .blog-card:hover .blog-card-image img {
+      transform: scale(1.05);
+    }
+
+    .blog-card-fallback-image {
+      color: var(--gold);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .blog-card-fallback-image span {
+      font-size: 3rem;
+    }
+
+    .blog-card-content {
+      padding: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
     }
 
     .card-meta {
@@ -146,7 +206,7 @@ interface BlogPost {
       justify-content: space-between;
       align-items: center;
       margin-top: auto;
-      border-top: 1px solid rgba(255, 255, 255, 0.05);
+      border-top: 1px solid rgba(11, 25, 44, 0.08);
       padding-top: 1rem;
     }
 
@@ -168,72 +228,125 @@ interface BlogPost {
       left: 0;
       right: 0;
       bottom: 0;
-      background: rgba(4, 9, 16, 0.85);
-      backdrop-filter: blur(8px);
+      background: rgba(11, 25, 44, 0.95);
+      backdrop-filter: blur(10px);
       z-index: 2000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 1.5rem;
+      overflow-y: auto;
     }
 
     .modal-content {
       width: 100%;
-      max-width: 800px;
-      max-height: 85vh;
-      overflow-y: auto;
+      min-height: 100vh;
+      background: #faf9f6; /* warm ivory light white */
+      color: #0b192c; /* dark text for readability */
+      padding: 6rem 2rem 4rem 2rem;
+      box-sizing: border-box;
       position: relative;
-      background: #0d1726;
-      border: 1px solid rgba(212, 175, 55, 0.3);
-      padding: 3rem;
+    }
+
+    .modal-inner-container {
+      width: 100%;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .modal-image-wrap {
+      width: 100%;
+      height: 450px;
+      overflow: hidden;
+      border-radius: 12px;
+      margin-bottom: 2.5rem;
+      border: 1px solid rgba(212, 175, 55, 0.35);
+      box-shadow: 0 10px 30px rgba(11, 25, 44, 0.1);
+    }
+
+    .modal-image-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     .modal-close {
-      position: absolute;
-      top: 1.5rem;
-      right: 2rem;
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      font-size: 2.5rem;
+      position: fixed;
+      top: 2rem;
+      right: 3rem;
+      background: rgba(11, 25, 44, 0.05);
+      border: 1px solid rgba(11, 25, 44, 0.1);
+      color: #0b192c;
+      font-size: 2rem;
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
       cursor: pointer;
-      line-height: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       transition: var(--transition-smooth);
+      z-index: 2010;
     }
 
     .modal-close:hover {
-      color: var(--accent);
+      background: var(--accent);
+      color: #ffffff;
+      transform: rotate(90deg);
     }
 
     .modal-meta {
-      font-size: 0.85rem;
-      color: var(--text-muted);
-      margin-bottom: 1.25rem;
+      font-size: 0.9rem;
+      color: rgba(11, 25, 44, 0.6);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
     }
 
     .modal-author {
-      color: var(--gold);
+      color: var(--gold-hover);
+      font-weight: 600;
     }
 
     .modal-title {
-      font-size: 2.25rem;
-      margin-bottom: 2rem;
-      line-height: 1.2;
+      font-size: 2.75rem;
+      color: #0b192c;
+      margin-bottom: 2.5rem;
+      line-height: 1.25;
+      font-weight: 700;
+    }
+
+    .modal-body {
+      border-top: 1px solid rgba(11, 25, 44, 0.1);
+      padding-top: 2.5rem;
     }
 
     .formatted-content {
-      font-size: 1.05rem;
-      line-height: 1.8;
-      color: #e2e8f0;
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #1e293b;
       white-space: pre-wrap;
+      font-family: inherit;
     }
 
     @media (max-width: 768px) {
       .modal-content {
-        padding: 2rem 1.5rem;
+        padding: 5rem 1.25rem 3rem 1.25rem;
+      }
+      .modal-inner-container {
+        max-width: 100%;
+      }
+      .modal-image-wrap {
+        height: 250px;
+        margin-bottom: 1.75rem;
       }
       .modal-title {
-        font-size: 1.75rem;
+        font-size: 2rem;
+        margin-bottom: 1.75rem;
+      }
+      .modal-close {
+        top: 1rem;
+        right: 1rem;
+        width: 40px;
+        height: 40px;
+        font-size: 1.5rem;
       }
     }
   `]
@@ -315,5 +428,29 @@ export class BlogComponent implements OnInit {
 
   closePost() {
     this.selectedPost = null;
+  }
+
+  convertGoogleDriveUrl(url: string): string {
+    if (!url || !url.trim()) return '';
+    url = url.trim();
+
+    const ensureSize = (lh3Url: string): string => {
+      if (/=[swh]\d/.test(lh3Url) || lh3Url.endsWith('=s0')) return lh3Url;
+      return lh3Url + '=s0';
+    };
+
+    if (url.includes('lh3.googleusercontent.com')) return ensureSize(url);
+
+    const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch) {
+      return `https://lh3.googleusercontent.com/d/${fileMatch[1]}=s0`;
+    }
+
+    const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idMatch) {
+      return `https://lh3.googleusercontent.com/d/${idMatch[1]}=s0`;
+    }
+
+    return url;
   }
 }

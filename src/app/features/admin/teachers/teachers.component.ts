@@ -107,6 +107,7 @@ interface Teacher {
               <!-- Live photo preview -->
               <div class="photo-preview-wrap" *ngIf="photoPreviewUrl">
                 <img [src]="photoPreviewUrl" alt="Preview" class="photo-preview-img"
+                     referrerpolicy="no-referrer"
                      (error)="onPreviewError()">
                 <div class="preview-label">
                   <span class="material-icons-outlined">check_circle</span>
@@ -163,6 +164,7 @@ interface Teacher {
                     <img *ngIf="member.photoUrl && !imgError[member.id]"
                          [src]="convertGoogleDriveUrl(member.photoUrl)"
                          alt="{{ member.name }}"
+                         referrerpolicy="no-referrer"
                          class="table-photo"
                          (error)="imgError[member.id] = true">
                     <div *ngIf="!member.photoUrl || imgError[member.id]"
@@ -172,10 +174,10 @@ interface Teacher {
                     </div>
                   </td>
                   <td>
-                    <strong>{{ member.name }}</strong>
+                    <strong class="member-name">{{ member.name }}</strong>
                     <p class="credentials-tag" *ngIf="member.credentials && member.credentials.trim()">{{ member.credentials }}</p>
                   </td>
-                  <td>{{ member.role }}</td>
+                  <td class="member-role">{{ member.role }}</td>
                   <td>
                     <div class="action-btns">
                       <ng-container *ngIf="deleteConfirmId !== member.id">
@@ -500,6 +502,14 @@ interface Teacher {
       border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       font-size: 0.875rem;
       vertical-align: middle;
+    }
+
+    .member-name {
+      color: #000000;
+    }
+
+    .member-role {
+      color: #000000;
     }
 
     .editing-row {

@@ -13,6 +13,7 @@ interface BlogPost {
   author: string;
   summary?: string;
   createdAt?: string;
+  imageUrl?: string;
 }
 
 @Component({
@@ -75,8 +76,70 @@ interface BlogPost {
                         placeholder="Type the full detailed announcement content here..."></textarea>
             </div>
 
+            <!-- Blog Image Upload & URL options -->
+            <div class="form-group">
+              <label class="form-label">
+                <span class="material-icons-outlined label-icon">add_photo_alternate</span>
+                Feature Image / Cover Image
+              </label>
+
+              <!-- Option 1: File selector from computer -->
+              <div class="file-upload-container">
+                <label class="file-upload-label" for="photoFile">
+                  <span class="material-icons-outlined">cloud_upload</span>
+                  <span>{{ isUploading ? 'Uploading...' : 'Choose image from computer' }}</span>
+                  <input type="file" id="photoFile" accept="image/*" (change)="onFileSelected($event)" class="file-input" [disabled]="isUploading">
+                </label>
+                
+                <!-- Upload Progress Bar -->
+                <div class="progress-bar-container" *ngIf="isUploading && uploadProgress !== null">
+                  <div class="progress-bar" [style.width.%]="uploadProgress"></div>
+                  <span class="progress-text">{{ uploadProgress }}% uploaded</span>
+                </div>
+              </div>
+
+              <div class="or-separator">
+                <span>OR</span>
+              </div>
+
+              <!-- Option 2: Paste manual link -->
+              <div class="manual-url-container">
+                <input type="url" id="imageUrl" name="imageUrl" [(ngModel)]="formData.imageUrl"
+                       class="form-control"
+                       placeholder="Paste Google Drive share link here..."
+                       (ngModelChange)="onPhotoUrlChange($event)">
+                <span class="hint-msg">
+                  If using Google Drive: Share the file → Copy link → Paste above. We'll convert it automatically.
+                </span>
+
+                <div class="drive-folder-link-wrap">
+                  <a href="https://drive.google.com/drive/folders/1IJJS_1bU2FrkCbEmIggNcFmRWsFmzdfP?usp=sharing" 
+                     target="_blank" 
+                     class="btn-drive-link">
+                    <span class="material-icons-outlined">folder_shared</span>
+                    Open Google Drive Storage Folder
+                  </a>
+                </div>
+              </div>
+
+              <!-- Live photo preview -->
+              <div class="photo-preview-wrap" *ngIf="photoPreviewUrl">
+                <img [src]="photoPreviewUrl" alt="Preview" class="photo-preview-img"
+                     referrerpolicy="no-referrer"
+                     (error)="onPreviewError()">
+                <div class="preview-label">
+                  <span class="material-icons-outlined">check_circle</span>
+                  Image preview active
+                </div>
+              </div>
+              <div class="photo-preview-error" *ngIf="photoUrlError">
+                <span class="material-icons-outlined">error_outline</span>
+                Could not load preview. Make sure the file is shared publicly ("Anyone with the link").
+              </div>
+            </div>
+
             <div class="form-actions">
-              <button type="submit" [disabled]="blogForm.invalid || publishing" class="btn-gold publish-btn">
+              <button type="submit" [disabled]="blogForm.invalid || publishing || isUploading" class="btn-gold publish-btn">
                 <span class="material-icons-outlined spin-icon" *ngIf="publishing">sync</span>
                 <span>{{ publishing ? 'Saving...' : (isEditing ? 'Update Announcement' : 'Publish Announcement') }}</span>
               </button>
@@ -106,6 +169,7 @@ interface BlogPost {
             <table class="admin-blogs-table">
               <thead>
                 <tr>
+                  <th>Image</th>
                   <th>Title</th>
                   <th>Tag</th>
                   <th>Published Date</th>
@@ -114,6 +178,15 @@ interface BlogPost {
               </thead>
               <tbody>
                 <tr *ngFor="let post of posts" [class.editing-row]="editingId === post.id">
+                  <td>
+                    <div class="table-image-container">
+                      <img *ngIf="post.imageUrl" [src]="convertGoogleDriveUrl(post.imageUrl)" 
+                           alt="{{ post.title }}" class="table-thumb" referrerpolicy="no-referrer">
+                      <div *ngIf="!post.imageUrl" class="table-thumb-fallback">
+                        <span class="material-icons-outlined">image</span>
+                      </div>
+                    </div>
+                  </td>
                   <td>
                     <strong>{{ post.title }}</strong>
                     <p class="summary-preview" *ngIf="post.summary">{{ post.summary }}</p>
@@ -186,7 +259,8 @@ interface BlogPost {
     }
 
     .admin-form select {
-      background: #0f172a;
+      background: #ffffff;
+      color: #0b192c;
     }
 
     .form-actions {
@@ -337,6 +411,197 @@ interface BlogPost {
       box-shadow: 0 0 8px rgba(255, 82, 116, 0.3);
     }
 
+    /* File upload styles */
+    .file-upload-container {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px dashed rgba(11, 25, 44, 0.15);
+      border-radius: 8px;
+      padding: 1.25rem;
+      text-align: center;
+      transition: var(--transition-smooth);
+    }
+
+    .file-upload-container:hover {
+      border-color: var(--gold);
+      background: rgba(212, 175, 55, 0.02);
+    }
+
+    .file-upload-label {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      cursor: pointer;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 500;
+      transition: var(--transition-smooth);
+    }
+
+    .file-upload-label:hover {
+      color: #0b192c;
+    }
+
+    .file-upload-label span.material-icons-outlined {
+      font-size: 2rem;
+      color: var(--gold);
+    }
+
+    .file-input {
+      display: none;
+    }
+
+    .progress-bar-container {
+      margin-top: 1rem;
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 4px;
+      height: 6px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .progress-bar {
+      background: linear-gradient(90deg, var(--gold) 0%, #ffdf7a 100%);
+      height: 100%;
+      width: 0;
+      transition: width 0.2s ease;
+      border-radius: 4px;
+    }
+
+    .progress-text {
+      display: block;
+      font-size: 0.7rem;
+      color: var(--gold);
+      margin-top: 0.35rem;
+      font-weight: 600;
+    }
+
+    .or-separator {
+      text-align: center;
+      margin: 1.25rem 0;
+      position: relative;
+    }
+
+    .or-separator::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 50%;
+      width: 100%;
+      height: 1px;
+      background: rgba(11, 25, 44, 0.08);
+      z-index: 1;
+    }
+
+    .or-separator span {
+      background: #ffffff; /* matches light card background */
+      padding: 0 0.75rem;
+      color: var(--text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      position: relative;
+      z-index: 2;
+    }
+
+    .btn-drive-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+      color: var(--gold-hover);
+      background: rgba(212, 175, 55, 0.08);
+      border: 1px dashed rgba(212, 175, 55, 0.3);
+      padding: 0.5rem 0.85rem;
+      border-radius: 6px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-decoration: none;
+      transition: var(--transition-smooth);
+    }
+
+    .btn-drive-link:hover {
+      background: rgba(212, 175, 55, 0.15);
+      border-color: var(--gold);
+      box-shadow: 0 2px 10px rgba(212, 175, 55, 0.1);
+    }
+
+    .btn-drive-link span {
+      font-size: 1.1rem;
+    }
+
+    /* Photo preview */
+    .photo-preview-wrap {
+      margin-top: 0.75rem;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .photo-preview-img {
+      width: 120px;
+      height: 72px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 2px solid var(--gold);
+      box-shadow: 0 4px 15px rgba(212, 175, 55, 0.25);
+    }
+
+    .preview-label {
+      display: flex;
+      align-items: center;
+      gap: 0.35rem;
+      font-size: 0.8rem;
+      color: #34d399;
+    }
+
+    .preview-label span {
+      font-size: 1rem;
+      color: #34d399;
+    }
+
+    .photo-preview-error {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+      color: #ff5274;
+      font-size: 0.8rem;
+    }
+
+    .photo-preview-error span {
+      font-size: 1rem;
+      flex-shrink: 0;
+    }
+
+    /* Table Thumbnail Styles */
+    .table-image-container {
+      width: 48px;
+      height: 48px;
+      border-radius: 6px;
+      overflow: hidden;
+      border: 1px solid rgba(11, 25, 44, 0.08);
+      background: rgba(11, 25, 44, 0.02);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .table-thumb {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .table-thumb-fallback {
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .table-thumb-fallback span {
+      font-size: 1.25rem;
+    }
+
     @media (max-width: 992px) {
       .blogs-admin-grid { grid-template-columns: 1fr; }
       .inline-fields { grid-template-columns: 1fr; gap: 0; }
@@ -350,17 +615,24 @@ export class BlogsComponent implements OnInit {
   isEditing = false;
   editingId = '';
   deleteConfirmId = '';
+  photoPreviewUrl = '';
+  photoUrlError = false;
+  uploadProgress: number | null = null;
+  isUploading = false;
+  appsScriptUrl = '';
 
   formData = {
     title: '',
     tag: 'Admissions',
     author: '',
     summary: '',
-    content: ''
+    content: '',
+    imageUrl: ''
   };
 
   ngOnInit() {
     this.loadPosts();
+    this.loadConfig();
   }
 
   loadPosts() {
@@ -404,6 +676,7 @@ export class BlogsComponent implements OnInit {
         author: this.formData.author,
         summary: this.formData.summary,
         content: this.formData.content,
+        imageUrl: this.formData.imageUrl || '',
         date: existingPost?.date || formattedDate,
         createdAt: existingPost?.createdAt || new Date().toISOString(),
         updatedAt: new Date().toISOString()
@@ -422,6 +695,7 @@ export class BlogsComponent implements OnInit {
       const newBlogRef = push(ref(db, 'blogs'));
       set(newBlogRef, {
         ...this.formData,
+        imageUrl: this.formData.imageUrl || '',
         date: formattedDate,
         createdAt: new Date().toISOString()
       })
@@ -429,6 +703,8 @@ export class BlogsComponent implements OnInit {
           this.publishing = false;
           form.resetForm({ tag: 'Admissions' });
           this.formData.tag = 'Admissions';
+          this.photoPreviewUrl = '';
+          this.photoUrlError = false;
           this.loadPosts();
         })
         .catch((error) => {
@@ -446,21 +722,160 @@ export class BlogsComponent implements OnInit {
       tag: post.tag,
       author: post.author,
       summary: post.summary || '',
-      content: post.content
+      content: post.content,
+      imageUrl: post.imageUrl || ''
     };
+    this.photoPreviewUrl = post.imageUrl ? this.convertGoogleDriveUrl(post.imageUrl) : '';
+    this.photoUrlError = false;
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   cancelEdit(form: any) {
     this.isEditing = false;
     this.editingId = '';
+    this.photoPreviewUrl = '';
+    this.photoUrlError = false;
     form.resetForm({ tag: 'Admissions' });
     this.formData = {
       title: '',
       tag: 'Admissions',
       author: '',
       summary: '',
-      content: ''
+      content: '',
+      imageUrl: ''
+    };
+  }
+
+  loadConfig() {
+    get(ref(db, 'settings/appsScriptUrl'))
+      .then((snapshot) => {
+        if (snapshot.exists()) {
+          this.appsScriptUrl = snapshot.val();
+        }
+      })
+      .catch((err) => {
+        console.error('Failed to load appsScriptUrl:', err);
+      });
+  }
+
+  convertGoogleDriveUrl(url: string): string {
+    if (!url || !url.trim()) return '';
+    url = url.trim();
+
+    const ensureSize = (lh3Url: string): string => {
+      if (/=[swh]\d/.test(lh3Url) || lh3Url.endsWith('=s0')) return lh3Url;
+      return lh3Url + '=s0';
+    };
+
+    if (url.includes('lh3.googleusercontent.com')) return ensureSize(url);
+
+    const fileMatch = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+    if (fileMatch) {
+      return `https://lh3.googleusercontent.com/d/${fileMatch[1]}=s0`;
+    }
+
+    const idMatch = url.match(/[?&]id=([a-zA-Z0-9_-]+)/);
+    if (idMatch) {
+      return `https://lh3.googleusercontent.com/d/${idMatch[1]}=s0`;
+    }
+
+    return url;
+  }
+
+  onPhotoUrlChange(value: string) {
+    this.photoUrlError = false;
+    this.photoPreviewUrl = '';
+    if (value && value.trim()) {
+      this.photoPreviewUrl = this.convertGoogleDriveUrl(value.trim());
+    }
+  }
+
+  onPreviewError() {
+    this.photoPreviewUrl = '';
+    this.photoUrlError = true;
+  }
+
+  onFileSelected(event: any) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (!this.appsScriptUrl) {
+      alert('Please configure your Google Apps Script Web App URL first in the Google Drive Upload Configuration section under the Leadership Board page.');
+      return;
+    }
+
+    if (file.size > 15 * 1024 * 1024) {
+      alert('Photo must be smaller than 15MB');
+      return;
+    }
+
+    if (!file.type.startsWith('image/')) {
+      alert('File must be an image');
+      return;
+    }
+
+    this.isUploading = true;
+    this.uploadProgress = 10;
+    this.photoUrlError = false;
+
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      this.uploadProgress = 30;
+      const base64Data = (reader.result as string).split(',')[1];
+      
+      const payload = {
+        filename: `blog_${Date.now()}_${file.name}`,
+        mimeType: file.type,
+        base64: base64Data
+      };
+
+      this.uploadProgress = 50;
+
+      const xhr = new XMLHttpRequest();
+      xhr.open('POST', this.appsScriptUrl, true);
+      xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
+
+      xhr.upload.onprogress = (e) => {
+        if (e.lengthComputable) {
+          const percent = 50 + Math.round((e.loaded / e.total) * 45);
+          this.uploadProgress = percent;
+        }
+      };
+
+      xhr.onload = () => {
+        this.isUploading = false;
+        this.uploadProgress = null;
+        
+        try {
+          const response = JSON.parse(xhr.responseText);
+          if (response.status === 'success') {
+            this.formData.imageUrl = response.url;
+            this.photoPreviewUrl = this.convertGoogleDriveUrl(response.url);
+          } else {
+            alert('Upload failed: ' + (response.message || 'Unknown error'));
+          }
+        } catch (err) {
+          console.error('Error parsing response:', err, xhr.responseText);
+          alert('Upload request sent. If the photo does not preview, please verify your Apps Script URL and Google Drive folder permissions.');
+        }
+      };
+
+      xhr.onerror = (err) => {
+        console.error('XHR Upload error:', err);
+        this.isUploading = false;
+        this.uploadProgress = null;
+        alert('Failed to connect to Apps Script. Please verify the URL and your internet connection.');
+      };
+
+      xhr.send(JSON.stringify(payload));
+    };
+
+    reader.onerror = (err) => {
+      console.error('File reading error:', err);
+      this.isUploading = false;
+      this.uploadProgress = null;
+      alert('Failed to read the file.');
     };
   }
 

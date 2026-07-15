@@ -16,32 +16,43 @@ interface Course {
 }
 
 @Component({
-  selector: 'app-adhunik',
+  selector: 'app-ila',
   standalone: true,
   imports: [CommonModule, RouterLink],
   template: `
     <!-- Header Hero Banner -->
-    <section class="adhunik-hero">
+    <section class="ila-hero">
       <div class="container animate-fade-in">
-        <span class="badge badge-burgundy">Academic Excellence</span>
-        <h1 class="serif-text">Xtreem Coaching Center</h1>
-        <p class="hero-sub font-gold">Empowering Students to Achieve Academic and Professional Goals</p>
+        <span class="badge badge-gold">Cochin's Premier Language Studio</span>
+        <h1 class="serif-text">International Language Academy (ILA)</h1>
+        <p class="hero-sub font-gold">Professional German & European Language Training</p>
         <p class="desc">
-          Access high-quality coaching, comprehensive learning materials, and expert guidance tailored to help you succeed in your educational journey.
+          Speak the world, live the dream. Master German language levels (A1 to B2) under expert guidance. We prepare you for Goethe, Telc, and ÖSD certifications, opening pathways for free higher education and nursing careers in Germany.
         </p>
-        <a routerLink="/contact" class="btn-gold">Enquire Now</a>
+        <a routerLink="/contact" class="btn-gold">Enquire About Batches</a>
       </div>
     </section>
 
     <!-- Key Course Specs & Syllabus -->
-    <section class="section-padding specs-section" *ngIf="loading || hasCurriculums()">
+    <section class="section-padding specs-section">
       <div class="container">
+        <div class="section-header">
+          <h2>Our Language Programs</h2>
+          <p>Carefully structured courses designed to prepare you for international certification and career transitions.</p>
+        </div>
+
         <div *ngIf="loading" class="loading-state text-center">
           <span class="material-icons-outlined spin-icon">sync</span>
           <p>Loading course information...</p>
         </div>
 
-        <div *ngIf="!loading" class="curriculums-container">
+        <div *ngIf="!loading && !hasCurriculums()" class="no-courses-state text-center" style="padding: 3rem; background: #ffffff; border-radius: 12px; border: 1px dashed rgba(11, 25, 44, 0.15);">
+          <span class="material-icons-outlined" style="font-size: 3rem; color: var(--text-muted); margin-bottom: 1rem; display: block;">school</span>
+          <h3 style="font-size: 1.5rem; margin-bottom: 0.5rem; color: var(--text-dark);">No Courses Added</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">Language program offerings are currently being updated. Please check back soon.</p>
+        </div>
+
+        <div *ngIf="!loading && hasCurriculums()" class="curriculums-container">
           <ng-container *ngFor="let course of courses; let i = index">
             <div *ngIf="course.highlights && course.highlights.length" 
                  class="specs-grid grid-cols-2" 
@@ -77,7 +88,7 @@ interface Course {
               </div>
 
               <div class="syllabus-card glass-card" [class.accent-card]="i % 2 === 0" [class.gold-card]="i % 2 !== 0">
-                <h3>Syllabus Overview</h3>
+                <h3>Course Syllabus & Highlights</h3>
                 <ul class="syllabus-list">
                   <li *ngFor="let highlight of course.highlights; let idx = index">
                     <span>{{ idx + 1 | number:'2.0-0' }}.</span>
@@ -114,17 +125,48 @@ interface Course {
       </div>
     </section>
 
+    <!-- Features & Placement -->
+    <section class="section-padding advantages-section">
+      <div class="container">
+        <div class="section-header text-center">
+          <h2>THE ILA ADVANTAGE</h2>
+          <p>Why choose ILA for your foreign language training and global migration aspirations?</p>
+        </div>
 
+        <div class="grid-cols-3 advantages-grid">
+          <!-- Certification Exam Prep -->
+          <div class="glass-card adv-card text-center">
+            <span class="material-icons-outlined card-icon">workspace_premium</span>
+            <h4>Exam Focused Training</h4>
+            <p>Targeted training for Goethe, Telc, and ÖSD certificates with rigorous mock tests and performance feedback.</p>
+          </div>
+
+          <!-- Language Lab -->
+          <div class="glass-card adv-card text-center">
+            <span class="material-icons-outlined card-icon">interpreter_mode</span>
+            <h4>Interactive Audio Lab</h4>
+            <p>Modern audio-visual modules and speaking labs to build native conversational fluency and correct accent patterns.</p>
+          </div>
+
+          <!-- Germany Pathways -->
+          <div class="glass-card adv-card text-center">
+            <span class="material-icons-outlined card-icon">flight_takeoff</span>
+            <h4>Global Career Pathways</h4>
+            <p>Complete assistance for university admissions, nurse registration, and visa processing for European countries.</p>
+          </div>
+        </div>
+      </div>
+    </section>
   `,
   styles: [`
-    .adhunik-hero {
+    .ila-hero {
       padding: 8rem 0 6rem 0;
-      background: linear-gradient(rgba(252, 251, 249, 0.75), rgba(252, 251, 249, 0.96)), url('https://images.unsplash.com/photo-1576091160550-2173dba999ef?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
+      background: linear-gradient(rgba(252, 251, 249, 0.8), rgba(252, 251, 249, 0.97)), url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
       background-size: cover;
       border-bottom: 1px solid rgba(11, 25, 44, 0.06);
     }
 
-    .adhunik-hero h1 {
+    .ila-hero h1 {
       font-size: 3.5rem;
       margin-top: 1rem;
       margin-bottom: 0.5rem;
@@ -144,25 +186,20 @@ interface Course {
     }
 
     /* Specs section styling */
+    .specs-section .section-header {
+      text-align: left;
+    }
+    
+    .specs-section .section-header p {
+      margin: 0.5rem 0 0 0;
+    }
+
     .specs-grid {
       gap: 4rem;
       align-items: center;
     }
 
-    .specs-grid.grid-cols-2 {
-      display: grid;
-      grid-template-columns: 1.2fr 1fr;
-      gap: 4rem;
-      align-items: center;
-    }
 
-    .specs-grid.grid-cols-1 {
-      display: grid;
-      grid-template-columns: 1fr;
-      gap: 2rem;
-      max-width: 800px;
-      margin: 0 auto;
-    }
 
     /* Gallery Section - Single Column Full View */
     .gallery-section {
@@ -338,15 +375,8 @@ interface Course {
     }
 
     @media (max-width: 992px) {
-      .adhunik-hero h1 { font-size: 2.75rem; }
-      .specs-grid.grid-cols-3 {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
-      .specs-grid.grid-cols-2 {
-        grid-template-columns: 1fr;
-        gap: 2rem;
-      }
+      .ila-hero h1 { font-size: 2.75rem; }
+      .specs-grid { grid-template-columns: 1fr; gap: 2rem; }
       .lightbox-footer {
         flex-direction: column;
         gap: 1rem;
@@ -355,13 +385,11 @@ interface Course {
     }
   `]
 })
-export class AdhunikComponent implements OnInit {
+export class IlaComponent implements OnInit {
   courses: Course[] = [];
   loading = true;
   lightboxUrl = '';
   lightboxTitle = '';
-
-  private defaultCourses: Course[] = [];
 
   ngOnInit() {
     this.fetchCourses();
@@ -423,22 +451,18 @@ export class AdhunikComponent implements OnInit {
           const data = snapshot.val();
           Object.keys(data).forEach((key) => {
             const course = { id: key, ...data[key] } as Course;
-            if (course.category === 'adhunik') {
+            if (course.category === 'language') {
               fetchedList.push(course);
             }
           });
         }
 
-        if (fetchedList.length > 0) {
-          this.courses = fetchedList;
-        } else {
-          this.courses = this.defaultCourses;
-        }
+        this.courses = fetchedList;
         this.loading = false;
       })
       .catch((error) => {
-        console.error('Error fetching Adhunik courses, using fallback:', error);
-        this.courses = this.defaultCourses;
+        console.error('Error fetching ILA courses:', error);
+        this.courses = [];
         this.loading = false;
       });
   }
