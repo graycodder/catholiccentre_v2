@@ -319,28 +319,10 @@ interface Teacher {
     .or-separator {
       text-align: center;
       margin: 1.25rem 0;
-      position: relative;
-    }
-
-    .or-separator::before {
-      content: '';
-      position: absolute;
-      left: 0;
-      top: 50%;
-      width: 100%;
-      height: 1px;
-      background: rgba(255, 255, 255, 0.08);
-      z-index: 1;
-    }
-
-    .or-separator span {
-      background: #0f172a;
-      padding: 0 0.75rem;
       color: var(--text-muted);
       font-size: 0.75rem;
       font-weight: 700;
-      position: relative;
-      z-index: 2;
+      letter-spacing: 0.05em;
     }
 
     .btn-drive-link {
