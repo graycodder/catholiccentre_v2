@@ -62,7 +62,7 @@ interface Course {
       <div class="container">
         <div class="section-header">
           <h2>Our Academic Programmes</h2>
-          <p>From Higher Secondary coaching to Postgraduate degrees under Mahatma Gandhi University — all under one roof.</p>
+          <p class="courses-header-desc">From Higher Secondary coaching to Postgraduate degrees under Mahatma Gandhi University — all under one roof.</p>
         </div>
 
         <div *ngIf="loading" class="loading-state text-center">
@@ -232,6 +232,12 @@ interface Course {
     /* ── Courses Section ── */
     .courses-detailed .section-header {
       margin-bottom: 3rem;
+    }
+
+    .courses-header-desc {
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      max-width: 700px;
     }
 
     .courses-detailed .section-header h2 {

@@ -118,9 +118,9 @@ interface TeacherMember {
     <!-- Leadership Section -->
     <section class="section-padding leadership-section">
       <div class="container">
-        <div class="section-header text-center">
+        <div class="section-header">
           <h2 class="gold-gradient-text">OUR LEADERSHIP BOARD</h2>
-          <p>Guided by dedicated spiritual scholars and administrative directors.</p>
+          <p class="leadership-header-desc">Guided by dedicated spiritual scholars and administrative directors.</p>
         </div>
 
         <div *ngIf="loadingLeaders" class="leaders-loading text-center">
@@ -160,9 +160,9 @@ interface TeacherMember {
     <!-- Honorable Teachers Section -->
     <section class="section-padding teachers-section">
       <div class="container">
-        <div class="section-header text-center animate-fade-in">
+        <div class="section-header animate-fade-in">
           <h2 class="gold-gradient-text">OUR HONORABLE TEACHERS</h2>
-          <p>Meet the dedicated scholars and instructors driving academic success in our classrooms.</p>
+          <p class="teacher-header-desc">Meet the dedicated scholars and instructors driving academic success in our classrooms.</p>
         </div>
 
         <div *ngIf="loadingTeachers" class="leaders-loading text-center">
@@ -203,9 +203,9 @@ interface TeacherMember {
     <!-- Staff & Faculty Section -->
     <section class="section-padding staff-section">
       <div class="container">
-        <div class="section-header text-center">
+        <div class="section-header">
           <h2 class="gold-gradient-text">FACULTY &amp; STAFF</h2>
-          <p>Meet the dedicated educators and support staff who power our academies every day.</p>
+          <p class="staff-header-desc">Meet the dedicated educators and support staff who power our academies every day.</p>
         </div>
 
         <div *ngIf="loadingStaff" class="leaders-loading text-center">
@@ -214,11 +214,35 @@ interface TeacherMember {
         </div>
 
         <!-- Empty state when no staff found anywhere -->
-        <div *ngIf="!loadingStaff && staff.length === 0" class="text-center staff-empty">
+        <div *ngIf="!loadingStaff && staff.length === 0 && managers.length === 0" class="text-center staff-empty">
           <span class="material-icons-outlined">badge</span>
           <p>Faculty profiles will appear here once added by the administration.</p>
         </div>
 
+        <!-- If there are managers, display them at the top center -->
+        <div *ngIf="!loadingStaff && managers.length > 0" class="managers-container">
+          <div class="glass-card staff-card manager-card" *ngFor="let member of managers; let i = index">
+            <!-- Photo if available, else initials avatar -->
+            <img *ngIf="member.photoUrl"
+                 [src]="fixDriveUrl(member.photoUrl)"
+                 [alt]="member.name"
+                 referrerpolicy="no-referrer"
+                 class="staff-photo">
+            <div *ngIf="!member.photoUrl"
+                 class="staff-avatar"
+                 [class.staff-avatar-alt]="i % 2 !== 0">
+              {{ getInitials(member.name) }}
+            </div>
+            <div class="staff-info">
+              <h4>{{ member.name }}</h4>
+              <p class="staff-role">{{ member.role }}</p>
+              <p class="staff-credentials" *ngIf="member.credentials && member.credentials.trim()">{{ member.credentials }}</p>
+              <p class="staff-desc" *ngIf="member.description && member.description.trim()">{{ member.description }}</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Remaining staff layout in standard grid layout -->
         <div *ngIf="!loadingStaff && staff.length > 0" class="staff-grid">
           <div class="glass-card staff-card" *ngFor="let member of staff; let i = index">
             <!-- Photo if available, else initials avatar -->
@@ -585,6 +609,12 @@ interface TeacherMember {
       background: var(--bg-dark);
     }
 
+    .leadership-header-desc, .teacher-header-desc, .staff-header-desc {
+      margin-left: 0 !important;
+      margin-right: auto !important;
+      max-width: 700px;
+    }
+
     .staff-empty, .leaders-empty {
       padding: 4rem 0;
       color: var(--text-muted);
@@ -600,6 +630,21 @@ interface TeacherMember {
 
     .leaders-empty span {
       color: var(--gold);
+    }
+
+    .managers-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2.5rem;
+      width: 100%;
+    }
+
+    .manager-card {
+      max-width: 480px;
+      width: 100%;
+      border: 2px solid var(--gold);
+      box-shadow: 0 8px 30px rgba(212, 175, 55, 0.15);
+      background: rgba(255, 255, 255, 0.03);
     }
 
     .staff-grid {
@@ -714,6 +759,7 @@ export class AboutComponent implements OnInit {
   loadingTeachers = true;
 
   staff: StaffMember[] = [];
+  managers: StaffMember[] = [];
   loadingStaff = true;
 
   // No fallback leaders anymore
@@ -780,6 +826,7 @@ export class AboutComponent implements OnInit {
       .then((snapshot) => {
         const teachersList: TeacherMember[] = [];
         const staffList: StaffMember[] = [];
+        const managersList: StaffMember[] = [];
         if (snapshot.exists()) {
           const data = snapshot.val();
           Object.keys(data).forEach((key) => {
@@ -788,13 +835,19 @@ export class AboutComponent implements OnInit {
               if (item.type === 'teacher') {
                 teachersList.push({ id: key, ...item } as TeacherMember);
               } else {
-                staffList.push({ id: key, ...item } as StaffMember);
+                const member = { id: key, ...item } as StaffMember;
+                if (member.role && member.role.toLowerCase().includes('manager')) {
+                  managersList.push(member);
+                } else {
+                  staffList.push(member);
+                }
               }
             }
           });
         }
         this.teachers = teachersList;
         this.staff = staffList;
+        this.managers = managersList;
         this.loadingTeachers = false;
         this.loadingStaff = false;
       })
@@ -802,6 +855,7 @@ export class AboutComponent implements OnInit {
         console.error('Error fetching faculty and teachers data:', error);
         this.teachers = [];
         this.staff = [];
+        this.managers = [];
         this.loadingTeachers = false;
         this.loadingStaff = false;
       });

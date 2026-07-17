@@ -135,6 +135,12 @@ interface Course {
       margin-bottom: 1rem;
     }
 
+    .services-hero p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
     .filter-tabs {
       display: flex;
       justify-content: center;

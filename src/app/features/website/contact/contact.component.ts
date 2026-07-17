@@ -172,6 +172,12 @@ interface InquiryForm {
       margin-bottom: 1rem;
     }
 
+    .contact-hero p {
+      font-size: 1.1rem;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+
     /* Contact Grid layout */
     .contact-grid {
       gap: 4rem;
