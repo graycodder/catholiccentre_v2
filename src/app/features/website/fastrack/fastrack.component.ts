@@ -60,6 +60,7 @@ interface Course {
               </div>
             </div>
             <p class="elig"><strong>Eligibility:</strong> {{ course.eligibility }}</p>
+            <a [routerLink]="['/contact']" [queryParams]="{ course: course.name }" class="apply-btn btn-outline">Apply Now &rarr;</a>
           </div>
         </div>
       </div>
@@ -148,6 +149,17 @@ interface Course {
     /* Curriculums grid */
     .curriculums-grid {
       gap: 3rem;
+      align-items: stretch;
+    }
+
+    .curriculums-grid .glass-card {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    .curriculums-grid .glass-card .badge {
+      align-self: flex-start;
     }
 
     .duration-label {
@@ -168,6 +180,7 @@ interface Course {
       font-size: 0.95rem;
       line-height: 1.6;
       margin-bottom: 1.5rem;
+      flex: 1;
     }
 
     .topics {
@@ -205,7 +218,17 @@ interface Course {
       font-size: 0.9rem;
       border-top: 1px solid rgba(11, 25, 44, 0.08);
       padding-top: 1rem;
-      margin: 0;
+      margin: 0 0 1.25rem 0;
+    }
+
+    .apply-btn {
+      display: inline-block;
+      font-size: 0.85rem;
+      padding: 0.5rem 1.25rem;
+      text-align: center;
+      text-decoration: none;
+      margin-top: auto;
+      align-self: flex-start;
     }
 
     .loading-state {

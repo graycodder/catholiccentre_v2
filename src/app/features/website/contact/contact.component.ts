@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { ActivatedRoute } from '@angular/router';
 import { db } from '../../../core/firebase.config';
 import { ref, push, set, get } from 'firebase/database';
 
@@ -318,6 +319,10 @@ export class ContactComponent implements OnInit {
     message: ''
   };
 
+  private preselectedCourse: string = '';
+
+  constructor(private route: ActivatedRoute) {}
+
   private defaultCourses: Course[] = [
     // St. Joseph's College
     { name: 'Plus Two Commerce', category: 'college', duration: '2 Years' },
@@ -341,6 +346,12 @@ export class ContactComponent implements OnInit {
   showSuccess = false;
 
   ngOnInit() {
+    // Read course query param before fetching so we can apply it after load
+    this.route.queryParams.subscribe(params => {
+      if (params['course']) {
+        this.preselectedCourse = params['course'];
+      }
+    });
     this.fetchCourses();
   }
 
@@ -360,10 +371,17 @@ export class ContactComponent implements OnInit {
         } else {
           this.courses = this.defaultCourses;
         }
+        // Pre-select course if navigated from a course card
+        if (this.preselectedCourse) {
+          this.formData.course = this.preselectedCourse;
+        }
       })
       .catch((error) => {
         console.error('Error fetching courses for contact inquiry dropdown:', error);
         this.courses = this.defaultCourses;
+        if (this.preselectedCourse) {
+          this.formData.course = this.preselectedCourse;
+        }
       });
   }
 

@@ -10,7 +10,7 @@ import { RouterLink } from '@angular/router';
       <div class="container footer-grid">
         <!-- Main Brand Column -->
         <div class="footer-brand">
-          <a routerLink="/" class="footer-logo">
+          <a routerLink="/" (click)="scrollToTop()" class="footer-logo">
             <img src="logo.png" alt="Catholic Centre Logo" class="logo-img">
             <h3 class="serif-text">CATHOLIC CENTRE</h3>
           </a>
@@ -28,11 +28,11 @@ import { RouterLink } from '@angular/router';
         <div class="footer-links">
           <h4>HELPFUL LINKS</h4>
           <ul>
-            <li><a routerLink="/">Home</a></li>
-            <li><a routerLink="/about">About Us</a></li>
-            <li><a routerLink="/services">Our Courses</a></li>
-            <li><a routerLink="/blog">News & Blog</a></li>
-            <li><a routerLink="/contact">Contact Us</a></li>
+            <li><a routerLink="/" (click)="scrollToTop()">Home</a></li>
+            <li><a routerLink="/about" (click)="scrollToTop()">About Us</a></li>
+            <li><a routerLink="/courses" (click)="scrollToTop()">Our Courses</a></li>
+            <li><a routerLink="/blog" (click)="scrollToTop()">News & Blog</a></li>
+            <li><a routerLink="/contact" (click)="scrollToTop()">Contact Us</a></li>
           </ul>
         </div>
 
@@ -40,10 +40,10 @@ import { RouterLink } from '@angular/router';
         <div class="footer-links">
           <h4>OUR ACADEMIES</h4>
           <ul>
-            <li><a [routerLink]="['/services']" [queryParams]="{ filter: 'college' }">St. Joseph's College</a></li>
-            <li><a routerLink="/ila">International Language Academy (ILA)</a></li>
-            <li><a routerLink="/adhunik">Xtreem Coaching Center</a></li>
-            <li><a routerLink="/fastrack">Fastrack Computer Center</a></li>
+            <li><a routerLink="/college" (click)="scrollToTop()">St. Joseph's College</a></li>
+            <li><a routerLink="/ila" (click)="scrollToTop()">International Language Academy (ILA)</a></li>
+            <li><a routerLink="/xtreem" (click)="scrollToTop()">Xtreem Coaching Center</a></li>
+            <li><a routerLink="/fastrack" (click)="scrollToTop()">Fastrack Computer Center</a></li>
           </ul>
         </div>
 
@@ -54,18 +54,29 @@ import { RouterLink } from '@angular/router';
             <span class="material-icons-outlined gold-text">place</span>
             <span>Catholic Centre, Thoppumpady, Cochin, Ernakulam, Kerala - 682005.</span>
           </p>
-          <p class="contact-item">
+          <div class="contact-item">
             <span class="material-icons-outlined gold-text">phone</span>
-            <a href="tel:+914842981533">+0 484 298 15 33</a>, <a href="tel:+914842231533">223 15 33</a>, 
-          </p>
-          <p class="contact-item">
+            <div class="phone-list">
+              <div><a href="tel:+914842981533">+0 484 298 15 33</a></div>
+              <div><a href="tel:+914842231533">+0 484 223 15 33</a></div>
+              <div><a href="tel:+914843190183">+0 484 319 01 83</a></div>
+            </div>
+          </div>
+          <div class="contact-item">
             <span class="material-icons-outlined gold-text">smartphone</span>
-            <span>920 733 15 33, 938 344 71 49</span>
-          </p>
-          <p class="contact-item">
+            <div class="phone-list">
+              <div><a href="tel:+919207331533">920 733 15 33</a> <span class="phone-label">(Mobile)</span></div>
+              <div><a href="tel:+919383447149">938 344 71 49</a> <span class="phone-label">(Mobile)</span></div>
+              <div><a href="tel:+919995481533">999 548 15 33</a> <span class="phone-label">(Mobile)</span></div>
+            </div>
+          </div>
+          <div class="contact-item">
             <span class="material-icons-outlined gold-text">mail</span>
-            <a href="mailto:stjosephscolleget@gmail.com">stjosephscolleget&#64;gmail.com</a>
-          </p>
+            <div class="phone-list">
+              <div><a href="mailto:stjosephscolleget@gmail.com">stjosephscolleget&#64;gmail.com</a></div>
+              <div><a href="mailto:ila.stjoseph2024@gmail.com">ila.stjoseph2024&#64;gmail.com</a></div>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -193,6 +204,18 @@ import { RouterLink } from '@angular/router';
       color: var(--gold);
     }
 
+    .phone-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.25rem;
+    }
+
+    .phone-label {
+      font-size: 0.8rem;
+      color: rgba(248, 250, 252, 0.5);
+      margin-left: 0.25rem;
+    }
+
     .footer-bottom {
       border-top: 1px solid rgba(255, 255, 255, 0.08);
       padding: 1.5rem 0;
@@ -227,4 +250,8 @@ import { RouterLink } from '@angular/router';
     }
   `]
 })
-export class FooterComponent { }
+export class FooterComponent {
+  scrollToTop() {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}

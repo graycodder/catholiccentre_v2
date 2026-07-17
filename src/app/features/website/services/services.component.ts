@@ -85,7 +85,7 @@ interface Course {
             </div>
 
             <div class="card-footer">
-              <a routerLink="/contact" class="btn-outline apply-btn-card">Apply Now</a>
+              <a [routerLink]="['/contact']" [queryParams]="{ course: course.name }" class="btn-outline apply-btn-card">Apply Now</a>
               <a *ngIf="course.imageUrl" [href]="course.imageUrl" target="_blank" class="brochure-btn-card">
                 <span class="material-icons-outlined" style="font-size: 1.1rem; margin-right: 0.25rem;">download</span> Brochure
               </a>

@@ -18,16 +18,30 @@ export const routes: Routes = [
         loadComponent: () => import('./features/website/about/about.component').then(m => m.AboutComponent)
       },
       {
-        path: 'services',
+        path: 'courses',
         loadComponent: () => import('./features/website/services/services.component').then(m => m.ServicesComponent)
+      },
+      {
+        path: 'services',
+        redirectTo: 'courses',
+        pathMatch: 'full'
       },
       {
         path: 'blog',
         loadComponent: () => import('./features/website/blog/blog.component').then(m => m.BlogComponent)
       },
       {
-        path: 'adhunik',
+        path: 'xtreem',
         loadComponent: () => import('./features/website/adhunik/adhunik.component').then(m => m.AdhunikComponent)
+      },
+      {
+        path: 'adhunik',
+        redirectTo: 'xtreem',
+        pathMatch: 'full'
+      },
+      {
+        path: 'college',
+        loadComponent: () => import('./features/website/college/college.component').then(m => m.CollegeComponent)
       },
       {
         path: 'fastrack',

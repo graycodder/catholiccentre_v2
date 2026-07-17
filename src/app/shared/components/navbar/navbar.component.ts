@@ -22,9 +22,10 @@ import { CommonModule } from '@angular/common';
         <div class="nav-links">
           <a routerLink="/" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">Home</a>
           <a routerLink="/about" routerLinkActive="active" class="nav-item">About</a>
-          <a routerLink="/services" routerLinkActive="active" class="nav-item">Courses</a>
+          <a routerLink="/courses" routerLinkActive="active" class="nav-item">Courses</a>
+          <a routerLink="/college" routerLinkActive="active" class="nav-item">St. Joseph's College</a>
           <a routerLink="/fastrack" routerLinkActive="active" class="nav-item">Fastrack</a>
-          <a routerLink="/adhunik" routerLinkActive="active" class="nav-item">Xtreem</a>
+          <a routerLink="/xtreem" routerLinkActive="active" class="nav-item">Xtreem</a>
           <a routerLink="/ila" routerLinkActive="active" class="nav-item">ILA</a>
           <a routerLink="/blog" routerLinkActive="active" class="nav-item">Blog</a>
           <a routerLink="/contact" routerLinkActive="active" class="nav-item">Contact</a>
@@ -40,9 +41,10 @@ import { CommonModule } from '@angular/common';
       <div class="mobile-drawer" [class.open]="menuOpen">
         <a routerLink="/" (click)="closeMenu()" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="drawer-item">Home</a>
         <a routerLink="/about" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">About Us</a>
-        <a routerLink="/services" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Courses</a>
+        <a routerLink="/courses" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Courses</a>
+        <a routerLink="/college" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">St. Joseph's College</a>
         <a routerLink="/fastrack" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Fastrack Academy</a>
-        <a routerLink="/adhunik" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Xtreem Coaching Center</a>
+        <a routerLink="/xtreem" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Xtreem Coaching Center</a>
         <a routerLink="/ila" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">ILA Language Academy</a>
         <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Blog & News</a>
         <a routerLink="/contact" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Contact Us</a>

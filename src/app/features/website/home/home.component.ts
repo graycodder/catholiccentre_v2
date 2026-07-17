@@ -11,14 +11,14 @@ import { CommonModule } from '@angular/common';
     <section class="hero-section">
       <div class="hero-overlay"></div>
       <div class="container hero-content animate-fade-in">
-        <span class="badge badge-gold hero-badge">Admissions Open</span>
-        <h1 class="serif-text hero-title">St. Joseph's College</h1>
+        <span class="badge badge-gold hero-badge">Diocese of Cochin — Est. 1977</span>
+        <h1 class="serif-text hero-title">Cochin Catholic Centre</h1>
         <p class="hero-subtitle">
-          Welcome to St. Joseph's College Thoppumpady! We provide exceptional coaching for Higher Secondary education and degree programs from Mahatma Gandhi University. With our passionate faculty and vibrant campus, you'll thrive and achieve your dreams.
+          A premier educational institution under the Diocese of Cochin, Thoppumpady. Home to St. Joseph's College, Fastrack Computer Center, Xtreem Coaching Center, and the International Language Academy (ILA) — nurturing thousands of students for over four decades.
         </p>
         <div class="hero-actions">
-          <a routerLink="/services" class="btn-gold">Explore Courses</a>
-          <a routerLink="/about" class="btn-outline">About Our History</a>
+          <a routerLink="/courses" class="btn-gold">Explore All Courses</a>
+          <a routerLink="/about" class="btn-outline">Our History</a>
         </div>
       </div>
     </section>
@@ -27,8 +27,8 @@ import { CommonModule } from '@angular/common';
     <section class="section-padding academies-section">
       <div class="container">
         <div class="section-header text-center">
-          <h2 class="gold-gradient-text">OUR EDUCATIONAL DIVISIONS</h2>
-          <p>We provide multiple specialized streams ranging from MG University degree coaching to language courses and government-certified diplomas.</p>
+          <h2 class="gold-gradient-text">OUR FOUR EDUCATIONAL ACADEMIES</h2>
+          <p>Catholic Centre is home to four specialized institutions — each dedicated to a distinct stream of education, from university degree coaching to language and technology programmes.</p>
         </div>
 
         <div class="grid-cols-4 academy-grid">
@@ -37,7 +37,7 @@ import { CommonModule } from '@angular/common';
             <span class="material-icons-outlined card-icon">school</span>
             <h3>St. Joseph's College</h3>
             <p>Higher Secondary coaching & Degree/Postgraduate programs (B.A., B.Com, M.A., M.Com) under MG University.</p>
-            <a [routerLink]="['/services']" [queryParams]="{ filter: 'college' }" class="card-link">View Programs &rarr;</a>
+            <a [routerLink]="['/courses']" [queryParams]="{ filter: 'college' }" class="card-link">View Programs &rarr;</a>
           </div>
 
           <!-- Fastrack Computer Center -->
@@ -45,7 +45,7 @@ import { CommonModule } from '@angular/common';
             <span class="material-icons-outlined card-icon">terminal</span>
             <h3>Fastrack Computer Center</h3>
             <p>Government-approved computer diplomas (PGDCA, DCA, PDWD) and programming (Python, C, Web/Graphic Design).</p>
-            <a routerLink="/fastrack" class="card-link">View IT Courses &rarr;</a>
+            <a [routerLink]="['/courses']" [queryParams]="{ filter: 'fastrack' }" class="card-link">View Programs &rarr;</a>
           </div>
 
           <!-- Xtreem Coaching Center -->
@@ -53,7 +53,7 @@ import { CommonModule } from '@angular/common';
             <span class="material-icons-outlined card-icon">health_and_safety</span>
             <h3>Xtreem Coaching Center</h3>
             <p>Nursing Assistant training with government certification. 100% job placement assistance guaranteed.</p>
-            <a routerLink="/adhunik" class="card-link font-gold">Read More &rarr;</a>
+            <a [routerLink]="['/courses']" [queryParams]="{ filter: 'adhunik' }" class="card-link font-gold">View Programs &rarr;</a>
           </div>
 
           <!-- ILA – Language Academy -->
@@ -61,19 +61,19 @@ import { CommonModule } from '@angular/common';
             <span class="material-icons-outlined card-icon">translate</span>
             <h3>ILA – Language Academy</h3>
             <p>Cochin's oldest linguistic centre. German Language coaching (A1-B2) for Goethe/Telc/ÖSD certifications.</p>
-            <a [routerLink]="['/services']" [queryParams]="{ filter: 'language' }" class="card-link">Learn German &rarr;</a>
+            <a [routerLink]="['/courses']" [queryParams]="{ filter: 'language' }" class="card-link">View Programs &rarr;</a>
           </div>
         </div>
       </div>
-    </section>
+    </section>  
 
     <!-- Video Showcase Section -->
     <section class="section-padding video-section">
       <div class="container">
         <div class="section-header text-center">
-          <span class="badge badge-gold">Explore Campus</span>
-          <h2 class="serif-text gold-gradient-text">Welcome to St. Joseph's College: Explore Our Campus</h2>
-          <p>Take a virtual tour of our college facilities, classroom environment, and campus life.</p>
+          <span class="badge badge-gold">Explore Catholic Centre</span>
+          <h2 class="serif-text gold-gradient-text">A Glimpse of Our Campus & Academies</h2>
+          <p>Take a virtual tour of the Catholic Centre — our campus facilities, learning environment, and vibrant student life across all four academies.</p>
         </div>
         <div class="video-container glass-card">
           <video controls width="100%" class="campus-video" poster="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1470&auto=format&fit=crop">
@@ -98,7 +98,7 @@ import { CommonModule } from '@angular/common';
         </div>
 
         <div class="patron-details glass-card accent-card">
-          <span class="badge badge-gold">Established in 1977</span>
+          <span class="badge badge-gold">Established in 1977 — Diocese of Cochin</span>
           <h2 class="serif-text">Heavenly Patron: St. Joseph</h2>
           <p>
             St. Joseph, known as a man of deep silence, is a powerful intercessor before God. As the foster father of Jesus and protector of the Virgin Mother, he played a vital role in the redemption of the world. In 1870, Pope Pius IX declared St. Joseph the Patron of the Universal Church, recognizing his role as a faithful guardian.
@@ -106,14 +106,14 @@ import { CommonModule } from '@angular/common';
           <div class="vision-info">
             <div>
               <h5>Our Aim</h5>
-              <p>To impart quality education and character values to coming generations.</p>
+              <p>To impart quality education and character values to coming generations under the Diocese of Cochin.</p>
             </div>
             <div>
               <h5>Our Motto</h5>
               <p class="serif-text gold-text italic">"To have Life in Fullness"</p>
             </div>
           </div>
-          <a routerLink="/about" class="btn-primary">Our Legacy & History</a>
+          <a routerLink="/about" class="btn-primary">Our Legacy &amp; History</a>
         </div>
       </div>
     </section>
@@ -154,8 +154,8 @@ import { CommonModule } from '@angular/common';
     <section class="cta-banner">
       <div class="cta-overlay"></div>
       <div class="container cta-content text-center">
-        <h2 class="serif-text">Unlock Your Academic Potential Today</h2>
-        <p>Admissions are currently open for all academies. Secure your seat now and build a successful global future.</p>
+        <h2 class="serif-text">Begin Your Journey at Catholic Centre</h2>
+        <p>Admissions are currently open across all four academies. Secure your seat today and take the first step towards a successful future.</p>
         <a routerLink="/contact" class="btn-gold btn-large">Apply for Admission</a>
       </div>
     </section>
