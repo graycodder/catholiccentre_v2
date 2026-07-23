@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet, NavigationEnd } from '@angular/router';
+import { filter } from 'rxjs/operators';
 import { CommonModule } from '@angular/common';
 import { auth } from '../../core/firebase.config';
 import { signOut } from 'firebase/auth';
@@ -81,7 +82,7 @@ import { signOut } from 'firebase/auth';
         </header>
 
         <main class="admin-content-area">
-          <router-outlet (activate)="onRouteActivated()"></router-outlet>
+          <router-outlet></router-outlet>
         </main>
       </div>
 
@@ -406,6 +407,13 @@ export class AdminLayoutComponent {
         this.userEmail = null;
       }
     });
+
+    this.updateActiveSection();
+    this.router.events.pipe(
+      filter((event): event is NavigationEnd => event instanceof NavigationEnd)
+    ).subscribe(() => {
+      this.updateActiveSection();
+    });
   }
 
   toggleSidebar() {
@@ -416,7 +424,7 @@ export class AdminLayoutComponent {
     this.sidebarOpen = false;
   }
 
-  onRouteActivated() {
+  updateActiveSection() {
     // Update breadcrumb section title based on active url path
     const url = this.router.url;
     if (url.includes('/leads')) {

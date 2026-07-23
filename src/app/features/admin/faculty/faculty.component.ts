@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { db } from '../../../core/firebase.config';
 import { ref, get, push, set, remove } from 'firebase/database';
+import { GoogleDriveService } from '../../../core/services/google-drive.service';
 
 interface FacultyMember {
   id: string;
@@ -671,6 +672,8 @@ export class FacultyComponent implements OnInit {
     photoUrl: ''
   };
 
+  constructor(private googleDriveService: GoogleDriveService) {}
+
   ngOnInit() {
     this.loadFaculty();
     this.loadConfig();
@@ -728,14 +731,9 @@ export class FacultyComponent implements OnInit {
     this.photoUrlError = true;
   }
 
-  onFileSelected(event: any) {
+  async onFileSelected(event: any) {
     const file = event.target.files?.[0];
     if (!file) return;
-
-    if (!this.appsScriptUrl) {
-      alert('Please configure your Google Apps Script Web App URL first in the Settings/Leadership section.');
-      return;
-    }
 
     if (file.size > 15 * 1024 * 1024) {
       alert('Photo must be smaller than 15MB');
@@ -748,68 +746,22 @@ export class FacultyComponent implements OnInit {
     }
 
     this.isUploading = true;
-    this.uploadProgress = 10;
+    this.uploadProgress = 20;
     this.photoUrlError = false;
 
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      this.uploadProgress = 30;
-      const base64Data = (reader.result as string).split(',')[1];
-
-      const payload = {
-        filename: `faculty_${Date.now()}_${file.name}`,
-        mimeType: file.type,
-        base64: base64Data
-      };
-
+    try {
       this.uploadProgress = 50;
-
-      const xhr = new XMLHttpRequest();
-      xhr.open('POST', this.appsScriptUrl, true);
-      xhr.setRequestHeader('Content-Type', 'text/plain;charset=utf-8');
-
-      xhr.upload.onprogress = (e) => {
-        if (e.lengthComputable) {
-          const percent = 50 + Math.round((e.loaded / e.total) * 45);
-          this.uploadProgress = percent;
-        }
-      };
-
-      xhr.onload = () => {
-        this.isUploading = false;
-        this.uploadProgress = null;
-
-        try {
-          const response = JSON.parse(xhr.responseText);
-          if (response.status === 'success') {
-            this.formData.photoUrl = response.url;
-            this.photoPreviewUrl = this.convertGoogleDriveUrl(response.url);
-          } else {
-            alert('Upload failed: ' + (response.message || 'Unknown error'));
-          }
-        } catch (err) {
-          console.error('Error parsing response:', err, xhr.responseText);
-          alert('Upload request sent. If the photo does not preview, please verify your Apps Script URL and Google Drive folder permissions.');
-        }
-      };
-
-      xhr.onerror = (err) => {
-        console.error('XHR Upload error:', err);
-        this.isUploading = false;
-        this.uploadProgress = null;
-        alert('Failed to connect to Apps Script. Please verify the URL and your internet connection.');
-      };
-
-      xhr.send(JSON.stringify(payload));
-    };
-
-    reader.onerror = (err) => {
-      console.error('File reading error:', err);
+      const result = await this.googleDriveService.uploadFile(file, 'Staffs');
+      this.uploadProgress = 100;
+      this.formData.photoUrl = result.url;
+      this.photoPreviewUrl = result.url;
+    } catch (err: any) {
+      console.error('Google Drive Upload error:', err);
+      alert('Upload failed: ' + (err.message || 'Error uploading file to Google Drive.'));
+    } finally {
       this.isUploading = false;
       this.uploadProgress = null;
-      alert('Failed to read the file.');
-    };
+    }
   }
 
   getInitials(name: string): string {
