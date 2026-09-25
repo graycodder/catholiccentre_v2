@@ -443,6 +443,7 @@ import { CommonModule } from '@angular/common';
 
     .video-container {
       max-width: 960px;
+      width: 100%;
       margin: 0 auto;
       padding: 0;
       border: 1px solid rgba(197, 155, 39, 0.25);
@@ -451,6 +452,7 @@ import { CommonModule } from '@angular/common';
       overflow: hidden;
       background: #0b192c;
       position: relative;
+      aspect-ratio: 16 / 9;
     }
 
     .video-popout-blocker {
@@ -465,19 +467,24 @@ import { CommonModule } from '@angular/common';
     }
 
     .campus-video-iframe {
-      display: block;
+      position: absolute;
+      top: -56px;
+      left: 0;
       width: 100%;
-      height: 570px;
-      margin-top: -56px;
+      height: calc(100% + 56px);
       border-radius: 0;
       border: none;
       outline: none;
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 576px) {
+      .video-popout-blocker {
+        width: 60px;
+        height: 50px;
+      }
       .campus-video-iframe {
-        height: 336px;
-        margin-top: -56px;
+        top: -52px;
+        height: calc(100% + 52px);
       }
     }
 
