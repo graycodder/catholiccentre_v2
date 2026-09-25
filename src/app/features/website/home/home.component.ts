@@ -76,10 +76,13 @@ import { CommonModule } from '@angular/common';
           <p>Take a virtual tour of the Catholic Centre — our campus facilities, learning environment, and vibrant student life across all four academies.</p>
         </div>
         <div class="video-container glass-card">
-          <video controls width="100%" class="campus-video" poster="https://images.unsplash.com/photo-1541339907198-e08756dedf3f?q=80&w=1470&auto=format&fit=crop">
-            <source src="https://cochincatholiccentre.com/images/ILA%20Final%20new.mp4" type="video/mp4">
-            Your browser does not support the video tag.
-          </video>
+          <iframe 
+            src="https://drive.google.com/file/d/1gpBrScbBPFBx4RvCZxA97uMhx31m-geu/preview" 
+            class="campus-video-iframe" 
+            allow="autoplay; fullscreen" 
+            allowfullscreen 
+            frameborder="0">
+          </iframe>
         </div>
       </div>
     </section>
@@ -438,7 +441,7 @@ import { CommonModule } from '@angular/common';
     }
 
     .video-container {
-      max-width: 900px;
+      max-width: 960px;
       margin: 0 auto;
       padding: 0.5rem;
       border: 1px solid rgba(197, 155, 39, 0.25);
@@ -449,13 +452,20 @@ import { CommonModule } from '@angular/common';
       backdrop-filter: blur(12px);
     }
 
-    .campus-video {
+    .campus-video-iframe {
       display: block;
       width: 100%;
+      height: 520px;
       border-radius: 14px;
       box-shadow: 0 10px 30px rgba(11, 25, 44, 0.08);
       border: 1px solid rgba(11, 25, 44, 0.08);
       outline: none;
+    }
+
+    @media (max-width: 768px) {
+      .campus-video-iframe {
+        height: 280px;
+      }
     }
 
     /* CTA Banner styling */
