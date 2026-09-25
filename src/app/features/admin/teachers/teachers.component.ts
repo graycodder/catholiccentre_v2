@@ -728,6 +728,16 @@ export class TeachersComponent implements OnInit {
             }
           });
         }
+        const getRoleRank = (role: string): number => {
+          const r = (role || '').toLowerCase();
+          if (r.includes('principal') && !r.includes('vice')) return 1;
+          if (r.includes('teacher') || r.includes('instructor') || r.includes('faculty') || r.includes('lecturer') || r.includes('professor')) return 2;
+          if (r.includes('vice principal')) return 3;
+          if (r.includes('director')) return 4;
+          if (r.includes('head') || r.includes('hod')) return 5;
+          return 10;
+        };
+        list.sort((a, b) => getRoleRank(a.role) - getRoleRank(b.role));
         this.teachers = list;
         this.loading = false;
       })

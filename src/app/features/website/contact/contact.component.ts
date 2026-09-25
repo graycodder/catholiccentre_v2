@@ -77,7 +77,7 @@ interface InquiryForm {
         </div>
 
         <!-- Application / Contact Form -->
-        <div class="form-container glass-card gold-card">
+        <div class="form-container glass-card gold-card" id="inquiry-form">
           <h3>Admission Inquiry Form</h3>
           <p>Complete this form to receive a direct call-back from our academic counselors.</p>
 
@@ -118,9 +118,9 @@ interface InquiryForm {
                   </option>
                 </optgroup>
                 
-                <optgroup label="Xtreem Coaching Center" *ngIf="hasCoursesForCategory('adhunik')">
+                <optgroup label="Xstream Coaching Center" *ngIf="hasCoursesForCategory('adhunik')">
                   <option *ngFor="let c of getCoursesByCategory('adhunik')" [value]="c.name">
-                    Xtreem Coaching: {{ c.name }}
+                    Xstream Coaching: {{ c.name }}
                   </option>
                 </optgroup>
                 
@@ -341,7 +341,7 @@ export class ContactComponent implements OnInit {
     // ILA
     { name: 'German Language Course (A1-A2)', category: 'language', duration: '3-4 Months' },
     { name: 'German Language Course (B1-B2)', category: 'language', duration: '4-5 Months' },
-    // Xtreem
+    // Xstream
     { name: 'Nursing Assistant Course', category: 'adhunik', duration: '6 Months' },
     // Fastrack
     { name: 'PGDCA (PG Diploma in Computer Applications)', category: 'fastrack', duration: '1 Year' },
@@ -352,13 +352,29 @@ export class ContactComponent implements OnInit {
   showSuccess = false;
 
   ngOnInit() {
-    // Read course query param before fetching so we can apply it after load
+    // Read course or focus query param before fetching so we can apply it after load
     this.route.queryParams.subscribe(params => {
       if (params['course']) {
         this.preselectedCourse = params['course'];
       }
+      if (params['course'] || params['focus'] === 'true') {
+        this.scrollToForm();
+      }
     });
     this.fetchCourses();
+  }
+
+  scrollToForm() {
+    setTimeout(() => {
+      const formEl = document.getElementById('inquiry-form');
+      if (formEl) {
+        formEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        const nameInput = document.getElementById('name') as HTMLInputElement;
+        if (nameInput) {
+          nameInput.focus();
+        }
+      }
+    }, 200);
   }
 
   fetchCourses() {
@@ -380,6 +396,7 @@ export class ContactComponent implements OnInit {
         // Pre-select course if navigated from a course card
         if (this.preselectedCourse) {
           this.formData.course = this.preselectedCourse;
+          this.scrollToForm();
         }
       })
       .catch((error) => {
@@ -387,6 +404,7 @@ export class ContactComponent implements OnInit {
         this.courses = this.defaultCourses;
         if (this.preselectedCourse) {
           this.formData.course = this.preselectedCourse;
+          this.scrollToForm();
         }
       });
   }

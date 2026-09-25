@@ -25,7 +25,7 @@ import { CommonModule } from '@angular/common';
           <a routerLink="/courses" routerLinkActive="active" class="nav-item">Courses</a>
           <a routerLink="/college" routerLinkActive="active" class="nav-item">St. Joseph's College</a>
           <a routerLink="/fastrack" routerLinkActive="active" class="nav-item">Fastrack</a>
-          <a routerLink="/xtreem" routerLinkActive="active" class="nav-item">Xtreem</a>
+          <a routerLink="/xstream" routerLinkActive="active" class="nav-item">Xstream</a>
           <a routerLink="/ila" routerLinkActive="active" class="nav-item">ILA</a>
           <a routerLink="/blog" routerLinkActive="active" class="nav-item">Blog</a>
           <a routerLink="/contact" routerLinkActive="active" class="nav-item">Contact</a>
@@ -44,11 +44,11 @@ import { CommonModule } from '@angular/common';
         <a routerLink="/courses" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Courses</a>
         <a routerLink="/college" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">St. Joseph's College</a>
         <a routerLink="/fastrack" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Fastrack Academy</a>
-        <a routerLink="/xtreem" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Xtreem Coaching Center</a>
+        <a routerLink="/xstream" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Xstream Coaching Center</a>
         <a routerLink="/ila" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">ILA Language Academy</a>
         <a routerLink="/blog" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Blog & News</a>
         <a routerLink="/contact" (click)="closeMenu()" routerLinkActive="active" class="drawer-item">Contact Us</a>
-        <a routerLink="/contact" (click)="closeMenu()" class="btn-primary drawer-apply">Apply Now</a>
+        <a routerLink="/contact" [queryParams]="{ focus: 'true' }" (click)="closeMenu()" class="btn-primary drawer-apply">Apply Now</a>
       </div>
     </nav>
   `,

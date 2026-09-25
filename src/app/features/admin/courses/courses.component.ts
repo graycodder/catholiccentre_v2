@@ -42,7 +42,7 @@ interface Course {
                 <select id="category" name="category" [(ngModel)]="formData.category" required class="form-control">
                   <option value="college">St. Joseph's College</option>
                   <option value="fastrack">Fastrack Computer Center</option>
-                  <option value="adhunik">Xtreem Coaching Center</option>
+                  <option value="adhunik">Xstream Coaching Center</option>
                   <option value="language">ILA</option>
                 </select>
               </div>
@@ -151,7 +151,7 @@ interface Course {
                 <option value="all">All Divisions</option>
                 <option value="college">St. Joseph's College</option>
                 <option value="fastrack">Fastrack Computer Center</option>
-                <option value="adhunik">Xtreem Coaching Center</option>
+                <option value="adhunik">Xstream Coaching Center</option>
                 <option value="language">ILA</option>
               </select>
             </div>
@@ -873,7 +873,7 @@ export class CoursesComponent implements OnInit {
     switch (cat) {
       case 'college': return "St. Joseph's College";
       case 'language': return 'ILA';
-      case 'adhunik': return 'Xtreem Coaching Center';
+      case 'adhunik': return 'Xstream Coaching Center';
       case 'fastrack': return 'Fastrack Computer Center';
       default: return cat;
     }

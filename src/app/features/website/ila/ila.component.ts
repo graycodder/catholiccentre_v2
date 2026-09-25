@@ -22,14 +22,19 @@ interface Course {
   template: `
     <!-- Header Hero Banner -->
     <section class="ila-hero">
-      <div class="container animate-fade-in">
-        <span class="badge badge-gold">Cochin's Premier Language Studio</span>
-        <h1 class="serif-text">International Language Academy (ILA)</h1>
-        <p class="hero-sub font-gold">Professional German & European Language Training</p>
-        <p class="desc">
-          Speak the world, live the dream. Master German language levels (A1 to B2) under expert guidance. We prepare you for Goethe, Telc, and ÖSD certifications, opening pathways for free higher education and nursing careers in Germany.
-        </p>
-        <a routerLink="/contact" class="btn-gold">Enquire About Batches</a>
+      <div class="container animate-fade-in hero-flex-wrap">
+        <div class="hero-text-content">
+          <span class="badge badge-gold">Cochin's Premier Language Studio</span>
+          <h1 class="serif-text">International Language Academy (ILA)</h1>
+          <p class="hero-sub font-gold">Professional German & European Language Training</p>
+          <p class="desc">
+            Speak the world, live the dream. Master German language levels (A1 to B2) under expert guidance. We prepare you for Goethe, Telc, and ÖSD certifications, opening pathways for free higher education and nursing careers in Germany.
+          </p>
+          <a routerLink="/contact" [queryParams]="{ course: 'German Language Course (A1-A2)' }" class="btn-gold">Enquire About Batches</a>
+        </div>
+        <div class="hero-image-side">
+          <img src="/ila-logo.png" alt="International Language Academy Cochin Logo" class="ila-side-logo-img">
+        </div>
       </div>
     </section>
 
@@ -160,10 +165,53 @@ interface Course {
   `,
   styles: [`
     .ila-hero {
-      padding: 8rem 0 6rem 0;
-      background: linear-gradient(rgba(252, 251, 249, 0.8), rgba(252, 251, 249, 0.97)), url('https://images.unsplash.com/photo-1544716278-ca5e3f4abd8c?q=80&w=1470&auto=format&fit=crop') no-repeat center center;
-      background-size: cover;
-      border-bottom: 1px solid rgba(11, 25, 44, 0.06);
+      padding: 5.5rem 0;
+      background: #fcfbf9;
+      border-bottom: 1px solid rgba(11, 25, 44, 0.08);
+    }
+
+    .hero-flex-wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 3.5rem;
+    }
+
+    .hero-text-content {
+      flex: 1;
+      max-width: 620px;
+    }
+
+    .hero-image-side {
+      flex-shrink: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .ila-side-logo-img {
+      max-width: 350px;
+      max-height: 350px;
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      mix-blend-mode: multiply;
+      filter: drop-shadow(0 12px 28px rgba(11, 25, 44, 0.08));
+    }
+
+    @media (max-width: 992px) {
+      .hero-flex-wrap {
+        flex-direction: column-reverse;
+        text-align: center;
+        gap: 2rem;
+      }
+      .hero-text-content {
+        max-width: 100%;
+      }
+      .ila-side-logo-img {
+        max-width: 240px;
+        max-height: 240px;
+      }
     }
 
     .ila-hero h1 {

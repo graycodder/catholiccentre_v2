@@ -14,7 +14,7 @@ import { CommonModule } from '@angular/common';
         <span class="badge badge-gold hero-badge">Diocese of Cochin — Est. 1977</span>
         <h1 class="serif-text hero-title">Cochin Catholic Centre</h1>
         <p class="hero-subtitle">
-          A premier educational institution under the Diocese of Cochin, Thoppumpady. Home to St. Joseph's College, Fastrack Computer Center, Xtreem Coaching Center, and the International Language Academy (ILA) — nurturing thousands of students for over four decades.
+          A premier educational institution under the Diocese of Cochin, Thoppumpady. Home to St. Joseph's College, Fastrack Computer Center, Xstream Coaching Center, and the International Language Academy (ILA) — nurturing thousands of students for over four decades.
         </p>
         <div class="hero-actions">
           <a routerLink="/courses" class="btn-gold">Explore All Courses</a>
@@ -48,10 +48,10 @@ import { CommonModule } from '@angular/common';
             <a [routerLink]="['/courses']" [queryParams]="{ filter: 'fastrack' }" class="card-link">View Programs &rarr;</a>
           </div>
 
-          <!-- Xtreem Coaching Center -->
+          <!-- Xstream Coaching Center -->
           <div class="glass-card accent-card">
             <span class="material-icons-outlined card-icon">health_and_safety</span>
-            <h3>Xtreem Coaching Center</h3>
+            <h3>Xstream Coaching Center</h3>
             <p>Nursing Assistant training with government certification. 100% job placement assistance guaranteed.</p>
             <a [routerLink]="['/courses']" [queryParams]="{ filter: 'adhunik' }" class="card-link font-gold">View Programs &rarr;</a>
           </div>

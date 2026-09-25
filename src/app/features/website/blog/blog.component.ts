@@ -485,9 +485,9 @@ export class BlogComponent implements OnInit {
     {
       id: 'nursing-assistant',
       title: 'Government-Certified Nursing Assistant Admissions Extended',
-      content: 'The Xtreem Coaching Center has extended its application submission date for the Nursing Assistant course. This program offers full clinical instruction, medical ethics briefings, and dedicated post-program hospital placement. To support students from economically weaker backgrounds, scholarship concessions are available. Contact the Director for fee waiver conditions.',
-      summary: 'Xtreem Coaching Center announces extension of application deadlines for the government-approved 6-month Nursing Assistant certificate program.',
-      tag: 'Xtreem Coaching',
+      content: 'The Xstream Coaching Center has extended its application submission date for the Nursing Assistant course. This program offers full clinical instruction, medical ethics briefings, and dedicated post-program hospital placement. To support students from economically weaker backgrounds, scholarship concessions are available. Contact the Director for fee waiver conditions.',
+      summary: 'Xstream Coaching Center announces extension of application deadlines for the government-approved 6-month Nursing Assistant certificate program.',
+      tag: 'Xstream Coaching',
       date: 'June 02, 2026',
       author: 'Director CCC'
     }

@@ -108,7 +108,7 @@ interface TeacherMember {
             <h3 class="serif-text font-burgundy">Managed by the Diocese of Cochin</h3>
             <p class="role-desc">Established in 1558</p>
             <p>
-              As one of the oldest dioceses in India, the Diocese of Cochin has spent over four centuries active in the educational, socio-economic, and cultural integration of the coastal community. Catholic Centre continues this legacy by steering St. Joseph's, ILA, Xtreem Coaching Center, and Fastrack Academies.
+              As one of the oldest dioceses in India, the Diocese of Cochin has spent over four centuries active in the educational, socio-economic, and cultural integration of the coastal community. Catholic Centre continues this legacy by steering St. Joseph's, ILA, Xstream Coaching Center, and Fastrack Academies.
             </p>
           </div>
         </div>
@@ -836,7 +836,9 @@ export class AboutComponent implements OnInit {
                 teachersList.push({ id: key, ...item } as TeacherMember);
               } else {
                 const member = { id: key, ...item } as StaffMember;
-                if (member.role && member.role.toLowerCase().includes('manager')) {
+                const roleLower = (member.role || '').toLowerCase();
+                // Only Manager goes into top manager card section
+                if (roleLower.includes('manager')) {
                   managersList.push(member);
                 } else {
                   staffList.push(member);
@@ -845,6 +847,21 @@ export class AboutComponent implements OnInit {
             }
           });
         }
+
+        // Principal comes #1 FIRST, Teachers/Faculty come #2 SECOND in Staff and Teachers grids
+        const getStaffRoleRank = (role: string): number => {
+          const r = (role || '').toLowerCase();
+          if (r.includes('principal') && !r.includes('vice')) return 1;
+          if (r.includes('teacher') || r.includes('instructor') || r.includes('faculty') || r.includes('lecturer') || r.includes('professor')) return 2;
+          if (r.includes('vice principal')) return 3;
+          if (r.includes('director')) return 4;
+          if (r.includes('head') || r.includes('hod')) return 5;
+          return 10;
+        };
+
+        staffList.sort((a, b) => getStaffRoleRank(a.role) - getStaffRoleRank(b.role));
+        teachersList.sort((a, b) => getStaffRoleRank(a.role) - getStaffRoleRank(b.role));
+
         this.teachers = teachersList;
         this.staff = staffList;
         this.managers = managersList;

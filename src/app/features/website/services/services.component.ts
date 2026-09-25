@@ -36,7 +36,7 @@ interface Course {
           <button class="btn-all" [class.active]="activeFilter === 'all'" (click)="setFilter('all')">All Programs</button>
           <button class="btn-college" [class.active]="activeFilter === 'college'" (click)="setFilter('college')">St. Joseph's College</button>
           <button class="btn-fastrack" [class.active]="activeFilter === 'fastrack'" (click)="setFilter('fastrack')">Fastrack Computer Center</button>
-          <button class="btn-adhunik" [class.active]="activeFilter === 'adhunik'" (click)="setFilter('adhunik')">Xtreem Coaching Center</button>
+          <button class="btn-adhunik" [class.active]="activeFilter === 'adhunik'" (click)="setFilter('adhunik')">Xstream Coaching Center</button>
           <button class="btn-language" [class.active]="activeFilter === 'language'" (click)="setFilter('language')">ILA</button>
         </div>
 
@@ -548,7 +548,7 @@ export class ServicesComponent implements OnInit {
     switch (cat) {
       case 'college': return "St. Joseph's College";
       case 'language': return 'ILA';
-      case 'adhunik': return 'Xtreem Coaching Center';
+      case 'adhunik': return 'Xstream Coaching Center';
       case 'fastrack': return 'Fastrack Computer Center';
       default: return 'General';
     }

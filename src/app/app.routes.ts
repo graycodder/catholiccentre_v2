@@ -31,12 +31,17 @@ export const routes: Routes = [
         loadComponent: () => import('./features/website/blog/blog.component').then(m => m.BlogComponent)
       },
       {
-        path: 'xtreem',
+        path: 'xstream',
         loadComponent: () => import('./features/website/adhunik/adhunik.component').then(m => m.AdhunikComponent)
       },
       {
+        path: 'xtreem',
+        redirectTo: 'xstream',
+        pathMatch: 'full'
+      },
+      {
         path: 'adhunik',
-        redirectTo: 'xtreem',
+        redirectTo: 'xstream',
         pathMatch: 'full'
       },
       {

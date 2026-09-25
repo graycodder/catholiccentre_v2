@@ -42,7 +42,7 @@ import { RouterLink } from '@angular/router';
           <ul>
             <li><a routerLink="/college" (click)="scrollToTop()">St. Joseph's College</a></li>
             <li><a routerLink="/ila" (click)="scrollToTop()">International Language Academy (ILA)</a></li>
-            <li><a routerLink="/xtreem" (click)="scrollToTop()">Xtreem Coaching Center</a></li>
+            <li><a routerLink="/xstream" (click)="scrollToTop()">Xstream Coaching Center</a></li>
             <li><a routerLink="/fastrack" (click)="scrollToTop()">Fastrack Computer Center</a></li>
           </ul>
         </div>

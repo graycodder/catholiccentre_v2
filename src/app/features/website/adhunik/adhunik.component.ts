@@ -24,7 +24,7 @@ interface Course {
     <section class="adhunik-hero">
       <div class="container animate-fade-in">
         <span class="badge badge-burgundy">Academic Excellence</span>
-        <h1 class="serif-text">Xtreem Coaching Center</h1>
+        <h1 class="serif-text">Xstream Coaching Center</h1>
         <p class="hero-sub font-gold">Empowering Students to Achieve Academic and Professional Goals</p>
         <p class="desc">
           Access high-quality coaching, comprehensive learning materials, and expert guidance tailored to help you succeed in your educational journey.

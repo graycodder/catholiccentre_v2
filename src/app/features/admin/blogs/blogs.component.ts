@@ -48,7 +48,7 @@ interface BlogPost {
                 <select id="tag" name="tag" [(ngModel)]="formData.tag" required class="form-control">
                   <option value="Admissions">Admissions</option>
                   <option value="Language (ILA)">Language (ILA)</option>
-                  <option value="Xtreem Coaching Center">Xtreem Coaching Center</option>
+                  <option value="Xstream Coaching Center">Xstream Coaching Center</option>
                   <option value="Fastrack">Fastrack IT</option>
                   <option value="General Notice">General Notice</option>
                   <option value="Events">Events &amp; Feast</option>
