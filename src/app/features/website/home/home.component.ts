@@ -76,6 +76,7 @@ import { CommonModule } from '@angular/common';
           <p>Take a virtual tour of the Catholic Centre — our campus facilities, learning environment, and vibrant student life across all four academies.</p>
         </div>
         <div class="video-container glass-card">
+          <div class="video-popout-blocker"></div>
           <iframe 
             src="https://drive.google.com/file/d/1gpBrScbBPFBx4RvCZxA97uMhx31m-geu/preview" 
             class="campus-video-iframe" 
@@ -443,28 +444,40 @@ import { CommonModule } from '@angular/common';
     .video-container {
       max-width: 960px;
       margin: 0 auto;
-      padding: 0.5rem;
+      padding: 0;
       border: 1px solid rgba(197, 155, 39, 0.25);
       box-shadow: var(--shadow-glow);
       border-radius: 20px;
       overflow: hidden;
-      background: rgba(255, 255, 255, 0.8);
-      backdrop-filter: blur(12px);
+      background: #0b192c;
+      position: relative;
+    }
+
+    .video-popout-blocker {
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 80px;
+      height: 60px;
+      z-index: 10;
+      background: transparent;
+      pointer-events: auto;
     }
 
     .campus-video-iframe {
       display: block;
       width: 100%;
-      height: 520px;
-      border-radius: 14px;
-      box-shadow: 0 10px 30px rgba(11, 25, 44, 0.08);
-      border: 1px solid rgba(11, 25, 44, 0.08);
+      height: 570px;
+      margin-top: -56px;
+      border-radius: 0;
+      border: none;
       outline: none;
     }
 
     @media (max-width: 768px) {
       .campus-video-iframe {
-        height: 280px;
+        height: 336px;
+        margin-top: -56px;
       }
     }
 
